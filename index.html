@@ -4,6 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Vigilantes de Azeroth - Hermandad WoW</title>
+    <!-- Carga de tipografía épica medieval (Cinzel) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+    
     <style>
         :root {
             --bg-oscuro: #0f1115;
@@ -11,53 +16,78 @@
             --dorado-wow: #c19e45;
             --dorado-brillante: #f0cb6b;
             --azul-alianza: #1d4ed8;
+            --azul-glow: rgba(29, 78, 216, 0.4);
             --texto-claro: #e2e8f0;
             --texto-gris: #94a3b8;
+            
             /* Colores Oficiales de Clases de WoW */
             --color-guerrero: #c69b6d;
             --color-mago: #3fc7eb;
             --color-sacerdote: #ffffff;
             --color-druida: #ff7c0a;
+            --color-paladin: #f48cba;
+            --color-cazador: #aad372;
+            --color-brujo: #8788ee;
+            --color-pícaro: #fff468;
+            --color-chaman: #0070dd;
+            --color-caballero: #c41e3a;
+            --color-monje: #00ff98;
+            --color-cazadordemonios: #a330c9;
+            --color-evocador: #33937f;
+        }
+
+        * {
+            box-sizing: border-box;
         }
 
         body {
-            font-family: 'Cinzel', 'Georgia', serif;
+            font-family: 'Open Sans', sans-serif;
             background-color: var(--bg-oscuro);
             color: var(--texto-claro);
             margin: 0;
             padding: 0;
-            background-image: radial-gradient(circle at top, #151e36 0%, var(--bg-oscuro) 75%);
+            background-image: radial-gradient(circle at top, #151e36 0%, var(--bg-oscuro) 80%);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        h1, h2, h3, h4, nav button, .font-cinzel {
+            font-family: 'Cinzel', 'Georgia', serif;
         }
 
         header {
             text-align: center;
             padding: 40px 20px 20px 20px;
+            background: radial-gradient(ellipse at top, rgba(29, 78, 216, 0.25) 0%, transparent 70%);
         }
 
         h1 {
-            font-size: 3rem;
+            font-size: 2.8rem;
             color: var(--dorado-wow);
             margin: 0;
             text-transform: uppercase;
             letter-spacing: 3px;
-            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.7);
+            text-shadow: 0 2px 12px rgba(0, 0, 0, 0.9), 0 0 20px rgba(193, 158, 69, 0.3);
         }
 
         .lema {
             font-style: italic;
             color: var(--texto-gris);
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             margin-top: 10px;
             margin-bottom: 20px;
+            font-family: 'Cinzel', serif;
         }
 
         .imagen-logo {
             max-width: 100%;
-            width: 400px;
+            width: 420px;
+            height: auto;
             border-radius: 12px;
             margin-top: 10px;
             border: 2px solid var(--dorado-wow);
-            box-shadow: 0 4px 20px rgba(0,0,0,0.6);
+            box-shadow: 0 4px 25px rgba(0,0,0,0.8), 0 0 15px rgba(193, 158, 69, 0.2);
+            object-fit: cover;
         }
 
         /* MENÚ SUPERIOR DE PESTAÑAS INTERACTIVAS */
@@ -71,6 +101,7 @@
             top: 0;
             z-index: 100;
             flex-wrap: wrap;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.7);
         }
 
         nav button {
@@ -79,28 +110,35 @@
             color: var(--texto-gris);
             padding: 15px 20px;
             font-size: 0.95rem;
-            font-family: 'Cinzel', sans-serif;
             cursor: pointer;
-            transition: 0.3s;
+            transition: all 0.3s ease;
             text-transform: uppercase;
             letter-spacing: 1px;
+            outline: none;
         }
 
         nav button:hover {
             color: var(--dorado-brillante);
-            background-color: rgba(255,255,255,0.02);
+            background-color: rgba(255,255,255,0.03);
         }
 
         nav button.active {
             color: var(--dorado-brillante);
             border-bottom: 3px solid var(--dorado-brillante);
-            background-color: rgba(193, 158, 69, 0.05);
+            background-color: rgba(193, 158, 69, 0.08);
             font-weight: bold;
+            text-shadow: 0 0 8px rgba(240, 203, 107, 0.4);
         }
 
         /* CONTENEDORES DE SECCIÓN */
         .seccion-contenido {
             display: none;
+            animation: fadeIn 0.4s ease-in-out forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .seccion-contenido.active {
@@ -113,7 +151,7 @@
             padding: 0 20px;
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
+            gap: 25px;
         }
 
         .tarjeta {
@@ -122,47 +160,79 @@
             border-radius: 8px;
             padding: 25px;
             box-shadow: 0 10px 25px rgba(0,0,0,0.5);
-            transition: transform 0.3s, border-color 0.3s;
+            transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s;
         }
 
         .tarjeta:hover {
-            transform: translateY(-5px);
+            transform: translateY(-4px);
             border-color: var(--dorado-wow);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.7), 0 0 10px rgba(193, 158, 69, 0.15);
         }
 
         .tarjeta h2 {
             color: var(--dorado-brillante);
-            font-size: 1.5rem;
+            font-size: 1.4rem;
             margin-top: 0;
             border-bottom: 1px solid rgba(255,255,255,0.1);
             padding-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
-        .tarjeta p {
+        .tarjeta p, .tarjeta ul {
             color: var(--texto-gris);
-            line-height: 1.6;
+            font-size: 0.95rem;
+        }
+
+        .tarjeta ul {
+            padding-left: 20px;
+            margin: 10px 0;
+        }
+
+        .tarjeta li {
+            margin-bottom: 8px;
         }
 
         /* Estilos del Consejo */
         .consejo-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 20px;
-            margin-top: 25px;
+            margin-top: 20px;
         }
 
         .miembro {
             background: #12151c;
-            border: 1px solid rgba(193, 158, 69, 0.1);
-            padding: 15px;
+            border: 1px solid rgba(193, 158, 69, 0.2);
+            padding: 18px;
             border-radius: 6px;
             text-align: center;
+            transition: transform 0.2s;
         }
 
-        .miembro .icono { font-size: 2rem; margin-bottom: 10px; }
+        .miembro:hover {
+            transform: scale(1.02);
+        }
+
+        .miembro .icono { font-size: 2.2rem; margin-bottom: 10px; }
         .miembro strong { display: block; color: var(--texto-claro); font-size: 1.1rem; }
         .miembro .rango { color: var(--dorado-wow); font-size: 0.85rem; font-weight: bold; text-transform: uppercase; margin: 4px 0 10px 0; }
-        .miembro .lore-corto { font-size: 0.8rem; color: var(--texto-gris); line-height: 1.4; }
+        .miembro .lore-corto { font-size: 0.85rem; color: var(--texto-gris); line-height: 1.4; }
+
+        /* Color-coded tags for WoW Classes */
+        .clase-guerrero { color: var(--color-guerrero) !important; }
+        .clase-mago { color: var(--color-mago) !important; }
+        .clase-sacerdote { color: var(--color-sacerdote) !important; }
+        .clase-druida { color: var(--color-druida) !important; }
+        .clase-paladin { color: var(--color-paladin) !important; }
+        .clase-cazador { color: var(--color-cazador) !important; }
+        .clase-brujo { color: var(--color-brujo) !important; }
+        .clase-pícaro { color: var(--color-pícaro) !important; }
+        .clase-chaman { color: var(--color-chaman) !important; }
+        .clase-caballero { color: var(--color-caballero) !important; }
+        .clase-monje { color: var(--color-monje) !important; }
+        .clase-cazadordemonios { color: var(--color-cazadordemonios) !important; }
 
         /* Estilos de Barras de Rendimiento (Parses / Muro de la Fama) */
         .contenedor-barras {
@@ -173,18 +243,23 @@
             border-radius: 4px;
             margin-bottom: 12px;
             overflow: hidden;
-            border: 1px solid rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.08);
         }
         .barra-llena {
             padding: 10px 12px;
             font-size: 0.85rem;
             font-weight: bold;
-            color: #000;
+            color: #0f1115;
             display: flex;
             justify-content: space-between;
+            align-items: center;
+            border-radius: 3px;
         }
 
-        /* Estilos de Tablas (Control / Asistencia) */
+        /* Estilos de Tablas */
+        .tabla-contenedor {
+            overflow-x: auto;
+        }
         table {
             width: 100%;
             border-collapse: collapse;
@@ -192,38 +267,61 @@
             font-size: 0.9rem;
         }
         th, td {
-            padding: 12px;
+            padding: 12px 15px;
             text-align: left;
             border-bottom: 1px solid rgba(255,255,255,0.05);
         }
         th {
             color: var(--dorado-wow);
             border-bottom: 2px solid var(--dorado-wow);
+            background-color: rgba(0, 0, 0, 0.2);
         }
         tr:hover {
             background-color: rgba(255,255,255,0.02);
         }
 
+        /* Botón de Unirse y Links */
         .btn-unirse {
-            display: block;
-            width: 200px;
-            margin: 40px auto;
+            display: inline-block;
+            margin: 30px auto;
             background: linear-gradient(135deg, #8a6d29, var(--dorado-wow));
-            color: #000;
+            color: #0f1115;
             font-weight: bold;
             text-align: center;
-            padding: 12px;
+            padding: 14px 28px;
             text-decoration: none;
-            border-radius: 4px;
+            border-radius: 6px;
             text-transform: uppercase;
             letter-spacing: 1px;
             box-shadow: 0 4px 15px rgba(193, 158, 69, 0.3);
-            transition: 0.3s;
+            transition: all 0.3s ease;
+            border: 1px solid var(--dorado-brillante);
+            cursor: pointer;
         }
 
         .btn-unirse:hover {
             background: linear-gradient(135deg, var(--dorado-wow), var(--dorado-brillante));
-            box-shadow: 0 4px 20px rgba(193, 158, 69, 0.5);
+            box-shadow: 0 4px 25px rgba(193, 158, 69, 0.6);
+            transform: translateY(-2px);
+        }
+
+        .badge-status {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        .badge-completado { background: rgba(34, 197, 94, 0.2); color: #4ade80; border: 1px solid #22c55e; }
+        .badge-progreso { background: rgba(234, 179, 8, 0.2); color: #fde047; border: 1px solid #eab308; }
+
+        footer {
+            text-align: center;
+            padding: 30px 20px;
+            color: var(--texto-gris);
+            font-size: 0.85rem;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            margin-top: 40px;
         }
     </style>
 </head>
@@ -232,7 +330,7 @@
     <header>
         <h1>Vigilantes de Azeroth</h1>
         <div class="lema">"Por la Alianza, custodiamos el frente desde las sombras hasta la eternidad"</div>
-        <img src="perfil.jpeg" alt="Vigilantes de Azeroth Banner" class="imagen-logo">
+        <img src="https://placehold.co/800x300/11141a/c19e45?text=Vigilantes+de+Azeroth" alt="Vigilantes de Azeroth Banner" class="imagen-logo" onerror="this.onerror=null; this.src='https://placehold.co/800x300/11141a/c19e45?text=Vigilantes+de+Azeroth'">
     </header>
 
     <!-- MENÚ SUPERIOR DE PESTAÑAS -->
@@ -266,8 +364,287 @@
 
             <div class="tarjeta">
                 <h2>⚔️ Objetivos Activos</h2>
-                <p>Nuestro enfoque se centra en el avance estratégico de bandas (Raids), la conquista de mazmorras míticas de alto nivel y el dominio táctico de los campos de batalla organizados.</p>
+                <p>Nuestro enfoque se centra en el avance estratégico de bandas (Raids) en dificultad Heroica y Mítica, la conquista de mazmorras Míticas+ de alto nivel y el dominio táctico en campos de batalla puntuados.</p>
             </div>
 
-            <div class="tarjeta">
+            <div class="tarjeta" style="grid-column: 1 / -1;">
                 <h2>📜 Código de Honor</h2>
+                <ul style="line-height: 1.8;">
+                    <li><strong>I. Lealtad a la Alianza:</strong> Defenderás los valores y territorios de la Alianza por sobre todas las cosas.</li>
+                    <li><strong>II. Respeto al Hermano de Armas:</strong> Se mantendrá una conducta ejemplar tanto en el chat de hermandad como en canales públicos y Discord.</li>
+                    <li><strong>III. Puntualidad y Compromiso:</strong> Si confirmas asistencia a una raid, llegarás preparado con consumibles, encantamientos y estrategia aprendida.</li>
+                    <li><strong>IV. Humildad y Aprendizaje:</strong> La crítica constructiva es bienvenida; el ego destructivo no tiene cabida en nuestros rangos.</li>
+                </ul>
+            </div>
+
+            <!-- Consejo de Hermandad -->
+            <div class="tarjeta" style="grid-column: 1 / -1;">
+                <h2>👑 El Consejo de la Orden</h2>
+                <div class="consejo-grid">
+                    <div class="miembro">
+                        <div class="icono">🛡️</div>
+                        <strong class="clase-paladin">Valandor</strong>
+                        <div class="rango">Comandante (GM)</div>
+                        <div class="lore-corto">Paladín Protección. Veterano de mil batallas y escudo inamovible del frente.</div>
+                    </div>
+                    <div class="miembro">
+                        <div class="icono">🔮</div>
+                        <strong class="clase-mago">Aethelgard</strong>
+                        <div class="rango">Oficial / Raid Leader</div>
+                        <div class="lore-corto">Mago Fuego. Estratega implacable y maestro de las artes arcanas.</div>
+                    </div>
+                    <div class="miembro">
+                        <div class="icono">🌿</div>
+                        <strong class="clase-druida">Sylvanae</strong>
+                        <div class="rango">Oficial Heal</div>
+                        <div class="lore-corto">Druida Restauración. Sanadora suprema guardiana del equilibrio natural.</div>
+                    </div>
+                    <div class="miembro">
+                        <div class="icono">⚔️️</div>
+                        <strong class="clase-guerrero">Grombald</strong>
+                        <div class="rango">Oficial Melee</div>
+                        <div class="lore-corto">Guerrero Armas. Instructor de combate y ejecutor en primera línea.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div style="text-align: center;">
+            <a href="#unirse" onclick="alert('Ponte en contacto con Valandor o cualquier Oficial dentro del juego o vía Discord para solicitar tu prueba.')" class="btn-unirse">¡Solicita tu Ingreso!</a>
+        </div>
+    </div>
+
+    <!-- PESTAÑA: RESUMEN -->
+    <div id="resumen" class="seccion-contenido">
+        <div class="contenedor">
+            <div class="tarjeta">
+                <h2>📍 Información General</h2>
+                <p><strong>Servidor:</strong> Dun Modr / Los Errantes / Sanguino (EU)</p>
+                <p><strong>Facción:</strong> Alianza 🦁</p>
+                <p><strong>Horario de Raids:</strong> Domingo a Jueves, 22:00 - 00:30 CET</p>
+                <p><strong>Ambiente:</strong> Semi-Hardcore enfocado en Mítico</p>
+            </div>
+            <div class="tarjeta">
+                <h2>📢 Reclutamiento Abierto</h2>
+                <p>Buscamos jugadores comprometidos para completar nuestro roster mítico:</p>
+                <ul>
+                    <li class="clase-sacerdote"><strong>Sacerdote (Sombra / Sagrado)</strong> - Alto</li>
+                    <li class="clase-brujo"><strong>Brujo (Cualquier rama)</strong> - Alto</li>
+                    <li class="clase-cazador"><strong>Cazador (Puntería)</strong> - Medio</li>
+                    <li class="clase-evocador"><strong>Evocador (Aumento)</strong> - Alto</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- PESTAÑA: PROGRESIÓN -->
+    <div id="progresion" class="seccion-contenido">
+        <div class="contenedor">
+            <div class="tarjeta" style="grid-column: 1 / -1;">
+                <h2>🏆 Progreso de Bandas Actuales</h2>
+                <div class="tabla-contenedor">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Banda</th>
+                                <th>Dificultad Normal</th>
+                                <th>Dificultad Heroica</th>
+                                <th>Dificultad Mítica</th>
+                                <th>Estado</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Palacio de Nerub'ar</td>
+                                <td>8/8 (Limpio)</td>
+                                <td>8/8 (Limpio)</td>
+                                <td>4/8</td>
+                                <td><span class="badge-status badge-progreso">En Avance</span></td>
+                            </tr>
+                            <tr>
+                                <td>Amirdrassil, la Esperanza del Sueño</td>
+                                <td>9/9 (Limpio)</td>
+                                <td>9/9 (Limpio)</td>
+                                <td>9/9 (Aventajado)</td>
+                                <td><span class="badge-status badge-completado">Completado</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PESTAÑA: LOGROS -->
+    <div id="logros" class="seccion-contenido">
+        <div class="contenedor">
+            <div class="tarjeta">
+                <h2>🥇 Mítica+ Héroe de la Temporada</h2>
+                <p>Muro del honor para los integrantes que alcanzaron el top 0.1% de rating de M+:</p>
+                <ul>
+                    <li><strong class="clase-mago">Aethelgard</strong> - 3450 Rating</li>
+                    <li><strong class="clase-paladin">Valandor</strong> - 3380 Rating</li>
+                    <li><strong class="clase-pícaro">Shadowblade</strong> - 3350 Rating</li>
+                </ul>
+            </div>
+            <div class="tarjeta">
+                <h2>💎 Feats of Strength (Hazañas de Fuerza)</h2>
+                <p>Logros de Hermandad colectivos:</p>
+                <ul>
+                    <li><strong>Aventajado: Reina Ansurek</strong> - Temporada 1</li>
+                    <li><strong>Gloria del Incursor de Nerub-ar</strong> - Montura de Hermandad unlocked</li>
+                    <li><strong>Salón de la Fama: Alianza</strong> - Temporada anterior</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- PESTAÑA: RENDIMIENTO -->
+    <div id="rendimiento" class="seccion-contenido">
+        <div class="contenedor">
+            <div class="tarjeta" style="grid-column: 1 / -1;">
+                <h2>🔥 Muro de la Fama - DPS Top Parses (WarcraftLogs)</h2>
+                <div class="contenedor-barras">
+                    <div class="barra-progreso">
+                        <div class="barra-llena" style="width: 99%; background-color: var(--color-mago);">
+                            <span>Aethelgard (Mago Fuego)</span>
+                            <span>Parse: 99.4% (2.8M DPS)</span>
+                        </div>
+                    </div>
+                    <div class="barra-progreso">
+                        <div class="barra-llena" style="width: 97%; background-color: var(--color-brujo);">
+                            <span>Netherlord (Brujo Destrucción)</span>
+                            <span>Parse: 97.2% (2.65M DPS)</span>
+                        </div>
+                    </div>
+                    <div class="barra-progreso">
+                        <div class="barra-llena" style="width: 95%; background-color: var(--color-guerrero);">
+                            <span>Grombald (Guerrero Armas)</span>
+                            <span>Parse: 95.8% (2.5M DPS)</span>
+                        </div>
+                    </div>
+                    <div class="barra-progreso">
+                        <div class="barra-llena" style="width: 93%; background-color: var(--color-cazador);">
+                            <span>Hawkeye (Cazador Puntería)</span>
+                            <span>Parse: 93.1% (2.4M DPS)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PESTAÑA: CONTROL -->
+    <div id="control" class="seccion-contenido">
+        <div class="contenedor">
+            <div class="tarjeta" style="grid-column: 1 / -1;">
+                <h2>📊 Control de Asistencia al Roster Principal</h2>
+                <div class="tabla-contenedor">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Jugador</th>
+                                <th>Clase / Rol</th>
+                                <th>Asistencia (30 días)</th>
+                                <th>Estado Roster</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="clase-paladin">Valandor</td>
+                                <td>Paladín (Tanque)</td>
+                                <td>100%</td>
+                                <td>Core Main</td>
+                            </tr>
+                            <tr>
+                                <td class="clase-mago">Aethelgard</td>
+                                <td>Mago (DPS)</td>
+                                <td>98%</td>
+                                <td>Core Main</td>
+                            </tr>
+                            <tr>
+                                <td class="clase-druida">Sylvanae</td>
+                                <td>Druida (Sanador)</td>
+                                <td>95%</td>
+                                <td>Core Main</td>
+                            </tr>
+                            <tr>
+                                <td class="clase-sacerdote">Lightguard</td>
+                                <td>Sacerdote (Sanador)</td>
+                                <td>90%</td>
+                                <td>Rotación</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PESTAÑA: HISTORIAL -->
+    <div id="historial" class="seccion-contenido">
+        <div class="contenedor">
+            <div class="tarjeta" style="grid-column: 1 / -1;">
+                <h2>📜 Registro Histórico de Eventos</h2>
+                <ul>
+                    <li><strong>15 Oct:</strong> Derrota de Ky'vexa Mítico después de 42 pules. ¡Gran trabajo de todo el equipo!</li>
+                    <li><strong>01 Oct:</strong> Limpieza completa de Palacio de Nerub'ar en Heroico (8/8) en tiempo récord de 1h 40m.</li>
+                    <li><strong>15 Sep:</strong> Apertura del reclutamiento oficial para la nueva temporada de avance.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- PESTAÑA: LOOT -->
+    <div id="loot" class="seccion-contenido">
+        <div class="contenedor">
+            <div class="tarjeta">
+                <h2>💎 Sistema Loot Council (Consejo de Botín)</h2>
+                <p>En **Vigilantes de Azeroth** utilizamos un sistema de **Loot Council mediante RClootcouncil** priorizando el beneficio global del roster de raid.</p>
+            </div>
+            <div class="tarjeta">
+                <h2>⚖️ Criterios de Reparto</h2>
+                <ul>
+                    <li><strong>Tamaño de la mejora:</strong> BiS (Best in Slot) y bonus de conjunto tienen máxima prioridad.</li>
+                    <li><strong>Rendimiento y Asistencia:</strong> Compromiso demostrado durante los días de raid.</li>
+                    <li><strong>Distribución Equitativa:</strong> Evitar la acumulación de equipo en un solo jugador.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 Vigilantes de Azeroth - Hermandad de World of Warcraft. Por la Alianza.</p>
+    </footer>
+
+    <script>
+        /**
+         * Función para alternar entre pestañas interactivas
+         * @param {Event} evt - Evento de clic
+         * @param {string} nombrePestana - ID del contenedor a mostrar
+         */
+        function abrirPestana(evt, nombrePestana) {
+            // Ocultar todas las secciones
+            const secciones = document.querySelectorAll('.seccion-contenido');
+            secciones.forEach(seccion => {
+                seccion.classList.remove('active');
+            });
+
+            // Quitar clase active de todos los botones
+            const botones = document.querySelectorAll('.tab-btn');
+            botones.forEach(boton => {
+                boton.classList.remove('active');
+            });
+
+            // Mostrar la sección seleccionada y activar el botón correspondiente
+            const seccionObjetivo = document.getElementById(nombrePestana);
+            if (seccionObjetivo) {
+                seccionObjetivo.classList.add('active');
+            }
+
+            if (evt && evt.currentTarget) {
+                evt.currentTarget.classList.add('active');
+            }
+        }
+    </script>
+</body>
+</html>
