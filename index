@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vigilantes de Azeroth - Hermandad WoW</title>
+    <style>
+        :root {
+            --bg-oscuro: #0f1115;
+            --bg-tarjeta: #1a1d24;
+            --dorado-wow: #c19e45;
+            --dorado-brillante: #f0cb6b;
+            --texto-claro: #e2e8f0;
+            --texto-gris: #94a3b8;
+        }
+
+        body {
+            font-family: 'Cinzel', 'Georgia', serif;
+            background-color: var(--bg-oscuro);
+            color: var(--texto-claro);
+            margin: 0;
+            padding: 0;
+            background-image: radial-gradient(circle at top, #1e2230 0%, var(--bg-oscuro) 70%);
+        }
+
+        header {
+            text-align: center;
+            padding: 60px 20px;
+            border-bottom: 1px solid rgba(193, 158, 69, 0.2);
+        }
+
+        h1 {
+            font-size: 3rem;
+            color: var(--dorado-wow);
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.7);
+        }
+
+        .lema {
+            font-style: italic;
+            color: var(--texto-gris);
+            font-size: 1.2rem;
+            margin-top: 10px;
+        }
+
+        .contenedor {
+            max-width: 1100px;
+            margin: 40px auto;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .tarjeta {
+            background-color: var(--bg-tarjeta);
+            border: 1px solid #2e3440;
+            border-radius: 8px;
+            padding: 25px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            transition: transform 0.3s, border-color 0.3s;
+        }
+
+        .tarjeta:hover {
+            transform: translateY(-5px);
+            border-color: var(--dorado-wow);
+        }
+
+        .tarjeta h2 {
+            color: var(--dorado-brillante);
+            font-size: 1.5rem;
+            margin-top: 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 10px;
+        }
+
+        .tarjeta p {
+            color: var(--texto-gris);
+            line-height: 1.6;
+        }
+
+        .btn-unirse {
+            display: block;
+            width: 200px;
+            margin: 40px auto;
+            background: linear-gradient(135deg, #8a6d29, var(--dorado-wow));
+            color: #000;
+            font-weight: bold;
+            text-align: center;
+            padding: 12px;
+            text-decoration: none;
+            border-radius: 4px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 15px rgba(193, 158, 69, 0.3);
+            transition: 0.3s;
+        }
+
+        .btn-unirse:hover {
+            background: linear-gradient(135deg, var(--dorado-wow), var(--dorado-brillante));
+            box-shadow: 0 4px 20px rgba(193, 158, 69, 0.5);
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Vigilantes de Azeroth</h1>
+        <div class="lema">"Protegiendo el reino desde las sombras hasta los confines de la eternidad"</div>
+    </header>
+
+    <div class="contenedor">
+        <div class="tarjeta">
+            <h2>🛡️ Sobre la Hermandad</h2>
+            <p>Somos una orden dedicada a defender Azeroth contra cualquier amenaza. Reunimos a los mejores guerreros, magos y pícaros comprometidos con el progreso, el compañerismo y la superación en cada mazmorra y banda.</p>
+        </div>
+
+        <div class="tarjeta">
+            <h2>⚔️ Objetivos Activos</h2>
+            <p>Nuestro enfoque actual se centra en el avance de bandas (Raids) en dificultad mítica, la conquista de míticas+ de alto nivel y el dominio del campo de batalla en PvP puntuado de manera organizada.</p>
+        </div>
+
+        <div class="tarjeta">
+            <h2>📜 Código de Honor</h2>
+            <p>Lealtad, respeto mutuo y perseverancia. En Vigilantes de Azeroth dejamos a un lado el ego individual para priorizar el éxito del grupo. Cada miembro cuenta, cada wipe nos hace más fuertes.</p>
+        </div>
+    </div>
+
+    <a href="#" class="btn-unirse">Unirse a las Filas</a>
+
+</body>
+</html>
