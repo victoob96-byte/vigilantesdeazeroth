@@ -44,6 +44,16 @@
             color: var(--texto-gris);
             font-size: 1.2rem;
             margin-top: 10px;
+            margin-bottom: 20px;
+        }
+
+        .imagen-logo {
+            max-width: 100%;
+            width: 450px;
+            border-radius: 12px;
+            margin-top: 10px;
+            border: 2px solid var(--dorado-wow);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.6);
         }
 
         .contenedor {
@@ -85,7 +95,7 @@
         /* Estilos específicos para la sección del Consejo */
         .consejo-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
             gap: 20px;
             margin-top: 25px;
         }
@@ -152,6 +162,8 @@
     <header>
         <h1>Vigilantes de Azeroth</h1>
         <div class="lema">"Por la Alianza, custodiamos el frente desde las sombras hasta la eternidad"</div>
+        <!-- Enlace corregido para tu archivo perfil.jpeg -->
+        <img src="perfil.jpeg" alt="Vigilantes de Azeroth Banner" class="imagen-logo">
     </header>
 
     <div class="contenedor">
@@ -166,7 +178,7 @@
             </p>
         </div>
 
-        <!-- SECCIÓN ORIGINAL: GENERAL -->
+        <!-- SECCIÓN 2: DATOS BÁSICOS -->
         <div class="tarjeta">
             <h2>🛡️ Sobre la Hermandad</h2>
             <p>Somos una orden de la Alianza dedicada a defender el reino de cualquier amenaza. Reunimos a los combatientes más tenaces comprometidos con el compañerismo y la superación en cada mazmorra y banda.</p>
@@ -216,16 +228,16 @@
                 <div class="miembro">
                     <div class="icono">🪙</div>
                     <strong>Caly</strong>
-                    <div class="rango">Oficial / Cambiador de Divisas</div>
-                    <div class="lore-corto">Maneja las arcas de la hermandad con puño de hierro. Capaz de cambiar oro, plata y divisas de cualquier rincón del mundo para financiar el banco de raid.</div>
+                    <div class="rango">Oficial / Cambios</div>
+                    <div class="lore-corto">Maneja las arcas de la hermandad. Capaz de cambiar oro, plata y divisas de cualquier rincón para financiar las necesidades esenciales del banco de la orden.</div>
                 </div>
 
                 <!-- OFICIAL 2: ADENABOR -->
                 <div class="miembro">
                     <div class="icono">📣</div>
                     <strong>Adenabor</strong>
-                    <div class="rango">Oficial / Atención al Cliente</div>
-                    <div class="lore-corto">La voz de la paciencia. Resuelve disputas internas, atiende las quejas de los taberneros y asiste a los nuevos reclutas cuando se pierden en el mapa.</div>
+                    <div class="rango">Oficial / Atención</div>
+                    <div class="lore-corto">La voz de la paciencia. Resuelve disputas internas, gestiona la logística diaria y asiste a los nuevos reclutas cuando se pierden en los mapas.</div>
                 </div>
             </div>
         </div>
