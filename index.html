@@ -26,8 +26,7 @@
 
         header {
             text-align: center;
-            padding: 60px 20px;
-            border-bottom: 1px solid rgba(193, 158, 69, 0.2);
+            padding: 40px 20px 20px 20px;
         }
 
         h1 {
@@ -49,16 +48,63 @@
 
         .imagen-logo {
             max-width: 100%;
-            width: 450px;
+            width: 400px;
             border-radius: 12px;
             margin-top: 10px;
             border: 2px solid var(--dorado-wow);
             box-shadow: 0 4px 20px rgba(0,0,0,0.6);
         }
 
+        /* MENÚ SUPERIOR DE PESTAÑAS */
+        nav {
+            display: flex;
+            justify-content: center;
+            background-color: #11141a;
+            border-top: 1px solid rgba(193, 158, 69, 0.2);
+            border-bottom: 2px solid var(--dorado-wow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            flex-wrap: wrap;
+        }
+
+        nav button {
+            background: none;
+            border: none;
+            color: var(--texto-gris);
+            padding: 15px 20px;
+            font-size: 0.95rem;
+            font-family: 'Cinzel', sans-serif;
+            cursor: pointer;
+            transition: 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        nav button:hover {
+            color: var(--dorado-brillante);
+            background-color: rgba(255,255,255,0.02);
+        }
+
+        nav button.active {
+            color: var(--dorado-brillante);
+            border-bottom: 3px solid var(--dorado-brillante);
+            background-color: rgba(193, 158, 69, 0.05);
+            font-weight: bold;
+        }
+
+        /* CONTENEDORES DE SECCIÓN */
+        .seccion-contenido {
+            display: none; /* Oculto por defecto */
+        }
+
+        .seccion-contenido.active {
+            display: block; /* Muestra solo la activa */
+        }
+
         .contenedor {
             max-width: 1100px;
-            margin: 40px auto;
+            margin: 30px auto;
             padding: 0 20px;
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -92,7 +138,7 @@
             line-height: 1.6;
         }
 
-        /* Estilos específicos para la sección del Consejo */
+        /* Estilos del Consejo */
         .consejo-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
@@ -108,31 +154,10 @@
             text-align: center;
         }
 
-        .miembro .icono {
-            font-size: 2rem;
-            margin-bottom: 10px;
-        }
-
-        .miembro strong {
-            display: block;
-            color: var(--texto-claro);
-            font-size: 1.1rem;
-        }
-
-        .miembro .rango {
-            color: var(--dorado-wow);
-            font-size: 0.85rem;
-            font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin: 4px 0 10px 0;
-        }
-
-        .miembro .lore-corto {
-            font-size: 0.8rem;
-            color: var(--texto-gris);
-            line-height: 1.4;
-        }
+        .miembro .icono { font-size: 2rem; margin-bottom: 10px; }
+        .miembro strong { display: block; color: var(--texto-claro); font-size: 1.1rem; }
+        .miembro .rango { color: var(--dorado-wow); font-size: 0.85rem; font-weight: bold; text-transform: uppercase; margin: 4px 0 10px 0; }
+        .miembro .lore-corto { font-size: 0.8rem; color: var(--texto-gris); line-height: 1.4; }
 
         .btn-unirse {
             display: block;
@@ -162,89 +187,64 @@
     <header>
         <h1>Vigilantes de Azeroth</h1>
         <div class="lema">"Por la Alianza, custodiamos el frente desde las sombras hasta la eternidad"</div>
-        <!-- Enlace corregido para tu archivo perfil.jpeg -->
         <img src="perfil.jpeg" alt="Vigilantes de Azeroth Banner" class="imagen-logo">
     </header>
 
-    <div class="contenedor">
-        
-        <!-- SECCIÓN 1: LORE E HISTORIA SÉREA (ALIANZA) -->
-        <div class="tarjeta" style="grid-column: 1 / -1;">
-            <h2>📜 Las Crónicas de la Orden</h2>
-            <p style="font-style: italic; line-height: 1.8;">
-                Tras la caída del Rey Exánime y las constantes fracturas que han azotado a los Reinos del Este, un edicto secreto fue firmado en los salones del Torreón de Ventormenta. La Alianza necesitaba ojos donde la luz de los paladines no llegaba, y espadas firmes donde los ejércitos oficiales no podían marchar. Así nacieron los <strong>Vigilantes de Azeroth</strong>. 
-                <br><br>
-                Jurando lealtad eterna al León de la Alianza, esta orden se asentó en las fronteras del mundo conocido. No visten armaduras relucientes para los desfiles en el Barrio de los Enanos; vigilan las grietas de la Realidad y los frentes más hostiles, conteniendo los susurros del Vacío, las amenazas de la Horda y los vestigios de antiguos males. Cuando las trompetas de guerra suenan, los Vigilantes ya llevan ventaja en el campo de batalla.
-            </p>
-        </div>
+    <!-- MENÚ SUPERIOR DE PESTAÑAS -->
+    <nav>
+        <button class="tab-btn active" onclick="abrirPestana(event, 'inicio')">Inicio</button>
+        <button class="tab-btn" onclick="abrirPestana(event, 'resumen')">Resumen</button>
+        <button class="tab-btn" onclick="abrirPestana(event, 'progresion')">Progresión</button>
+        <button class="tab-btn" onclick="abrirPestana(event, 'logros')">Logros</button>
+        <button class="tab-btn" onclick="abrirPestana(event, 'rendimiento')">Rendimiento</button>
+        <button class="tab-btn" onclick="abrirPestana(event, 'control')">Control</button>
+        <button class="tab-btn" onclick="abrirPestana(event, 'historial')">Historial</button>
+        <button class="tab-btn" onclick="abrirPestana(event, 'loot')">Loot</button>
+    </nav>
 
-        <!-- SECCIÓN 2: DATOS BÁSICOS -->
-        <div class="tarjeta">
-            <h2>🛡️ Sobre la Hermandad</h2>
-            <p>Somos una orden de la Alianza dedicada a defender el reino de cualquier amenaza. Reunimos a los combatientes más tenaces comprometidos con el compañerismo y la superación en cada mazmorra y banda.</p>
-        </div>
-
-        <div class="tarjeta">
-            <h2>⚔️ Objetivos Activos</h2>
-            <p>Nuestro enfoque se centra en el avance estratégico de bandas (Raids), la conquista de mazmorras míticas de alto nivel y el dominio táctico de los campos de batalla organizados.</p>
-        </div>
-
-        <div class="tarjeta">
-            <h2>📜 Código de Honor</h2>
-            <p>Lealtad a la Alianza, respeto mutuo y perseverancia. Dejamos a un lado el ego individual para priorizar el éxito del grupo. Cada miembro cuenta, cada derrota nos hace más fuertes.</p>
-        </div>
-
-        <!-- SECCIÓN 3: EL CONSEJO DE FUNDADORES -->
-        <div class="tarjeta" style="grid-column: 1 / -1;">
-            <h2>👑 El Alto Consejo (5 Fundadores)</h2>
-            <p>La orden está gobernada por un triunvirato de Grandes Maestros respaldado por oficiales especialistas de élite:</p>
-            
-            <div class="consejo-grid">
-                <!-- GM 1: VIKTOR -->
-                <div class="miembro">
-                    <div class="icono">👑</div>
-                    <strong>Viktor</strong>
-                    <div class="rango">Guild Master</div>
-                    <div class="lore-corto">El estratega principal. Encargado de coordinar las campañas militares de la orden y guiar las espadas de la Alianza hacia la victoria.</div>
-                </div>
-
-                <!-- GM 2: PESCADITO -->
-                <div class="miembro">
-                    <div class="icono">🔱</div>
-                    <strong>Pescadito</strong>
-                    <div class="rango">Guild Master</div>
-                    <div class="lore-corto">El pilar místico. Capaz de mantener la calma en los peores wipes y reconducir las fuerzas del grupo cuando todo parece perdido.</div>
-                </div>
-
-                <!-- GM 3: JUAREZOTE -->
-                <div class="miembro">
-                    <div class="icono">🛡️</div>
-                    <strong>Juarezote</strong>
-                    <div class="rango">Guild Master</div>
-                    <div class="lore-corto">La vanguardia inquebrantable. Un líder imponente cuya sola presencia en primera línea inspira a los soldados a resistir hasta el final.</div>
-                </div>
-
-                <!-- OFICIAL 1: CALY -->
-                <div class="miembro">
-                    <div class="icono">🪙</div>
-                    <strong>Caly</strong>
-                    <div class="rango">Oficial / Cambios</div>
-                    <div class="lore-corto">Maneja las arcas de la hermandad. Capaz de cambiar oro, plata y divisas de cualquier rincón para financiar las necesidades esenciales del banco de la orden.</div>
-                </div>
-
-                <!-- OFICIAL 2: ADENABOR -->
-                <div class="miembro">
-                    <div class="icono">📣</div>
-                    <strong>Adenabor</strong>
-                    <div class="rango">Oficial / Atención</div>
-                    <div class="lore-corto">La voz de la paciencia. Resuelve disputas internas, gestiona la logística diaria y asiste a los nuevos reclutas cuando se pierden en los mapas.</div>
-                </div>
+    <!-- PESTAÑA PRINCIPAL AUTOMÁTICA: INICIO -->
+    <div id="inicio" class="seccion-contenido active">
+        <div class="contenedor">
+            <div class="tarjeta" style="grid-column: 1 / -1;">
+                <h2>📜 Las Crónicas de la Orden</h2>
+                <p style="font-style: italic; line-height: 1.8;">
+                    Tras la caída del Rey Exánime y las constantes fracturas que han azotado a los Reinos del Este, un edicto secreto fue firmado en los salones del Torreón de Ventormenta. La Alianza necesitaba ojos donde la luz de los paladines no llegaba, y espadas firmes donde los ejércitos oficiales no podían marchar. Así nacieron los <strong>Vigilantes de Azeroth</strong>. 
+                    <br><br>
+                    Jurando lealtad eterna al León de la Alianza, esta orden se asentó en las fronteras del mundo conocido. No visten armaduras relucientes para los desfiles en el Barrio de los Enanos; vigilan las grietas de la Realidad y los frentes más hostiles, conteniendo los susurros del Vacío, las amenazas de la Horda y los vestigios de antiguos males. Cuando las trompetas de guerra suenan, los Vigilantes ya llevan ventaja en el campo de batalla.
+                </p>
             </div>
-        </div>
 
-    </div>
+            <div class="tarjeta">
+                <h2>🛡️ Sobre la Hermandad</h2>
+                <p>Somos una orden de la Alianza dedicada a defender el reino de cualquier amenaza. Reunimos a los combatientes más tenaces comprometidos con el compañerismo y la superación en cada mazmorra y banda.</p>
+            </div>
 
-    <a href="#" class="btn-unirse">Unirse a las Filas</a>
+            <div class="tarjeta">
+                <h2>⚔️ Objetivos Activos</h2>
+                <p>Nuestro enfoque se centra en el avance estratégico de bandas (Raids), la conquista de mazmorras míticas de alto nivel y el dominio táctico de los campos de batalla organizados.</p>
+            </div>
 
-</body>
-</html>
+            <div class="tarjeta">
+                <h2>📜 Código de Honor</h2>
+                <p>Lealtad a la Alianza, respeto mutuo y perseverancia. Dejamos a un lado el ego individual para priorizar el éxito del grupo. Cada miembro cuenta, cada derrota nos hace más fuertes.</p>
+            </div>
+
+            <div class="tarjeta" style="grid-column: 1 / -1;">
+                <h2>👑 El Alto Consejo (5 Fundadores)</h2>
+                <div class="consejo-grid">
+                    <div class="miembro">
+                        <div class="icono">👑</div>
+                        <strong>Viktor</strong>
+                        <div class="rango">Guild Master</div>
+                        <div class="lore-corto">El estratega principal. Encargado de coordinar las campaigns militares de la orden y guiar las espadas de la Alianza hacia la victoria.</div>
+                    </div>
+                    <div class="miembro">
+                        <div class="icono">🔱</div>
+                        <strong>Pescadito</strong>
+                        <div class="rango">Guild Master</div>
+                        <div class="lore-corto">El pilar místico. Capaz de mantener la calma en los peores wipes y reconducir las fuerzas del grupo cuando todo parece perdido.</div>
+                    </div>
+                    <div class="miembro">
+                        <div class="icono">🛡️</div>
+                        <strong>Juarezote</strong>
+                        <div class="rango">Guild Master</div>
