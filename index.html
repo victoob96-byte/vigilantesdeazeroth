@@ -10,6 +10,7 @@
             --bg-tarjeta: #1a1d24;
             --dorado-wow: #c19e45;
             --dorado-brillante: #f0cb6b;
+            --azul-alianza: #1d4ed8;
             --texto-claro: #e2e8f0;
             --texto-gris: #94a3b8;
         }
@@ -20,7 +21,7 @@
             color: var(--texto-claro);
             margin: 0;
             padding: 0;
-            background-image: radial-gradient(circle at top, #1e2230 0%, var(--bg-oscuro) 70%);
+            background-image: radial-gradient(circle at top, #151e36 0%, var(--bg-oscuro) 75%);
         }
 
         header {
@@ -81,6 +82,48 @@
             line-height: 1.6;
         }
 
+        /* Estilos específicos para la sección del Consejo */
+        .consejo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 25px;
+        }
+
+        .miembro {
+            background: #12151c;
+            border: 1px solid rgba(193, 158, 69, 0.1);
+            padding: 15px;
+            border-radius: 6px;
+            text-align: center;
+        }
+
+        .miembro .icono {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .miembro strong {
+            display: block;
+            color: var(--texto-claro);
+            font-size: 1.1rem;
+        }
+
+        .miembro .rango {
+            color: var(--dorado-wow);
+            font-size: 0.85rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin: 4px 0 10px 0;
+        }
+
+        .miembro .lore-corto {
+            font-size: 0.8rem;
+            color: var(--texto-gris);
+            line-height: 1.4;
+        }
+
         .btn-unirse {
             display: block;
             width: 200px;
@@ -108,24 +151,85 @@
 
     <header>
         <h1>Vigilantes de Azeroth</h1>
-        <div class="lema">"Protegiendo el reino desde las sombras hasta los confines de la eternidad"</div>
+        <div class="lema">"Por la Alianza, custodiamos el frente desde las sombras hasta la eternidad"</div>
     </header>
 
     <div class="contenedor">
+        
+        <!-- SECCIÓN 1: LORE E HISTORIA SÉREA (ALIANZA) -->
+        <div class="tarjeta" style="grid-column: 1 / -1;">
+            <h2>📜 Las Crónicas de la Orden</h2>
+            <p style="font-style: italic; line-height: 1.8;">
+                Tras la caída del Rey Exánime y las constantes fracturas que han azotado a los Reinos del Este, un edicto secreto fue firmado en los salones del Torreón de Ventormenta. La Alianza necesitaba ojos donde la luz de los paladines no llegaba, y espadas firmes donde los ejércitos oficiales no podían marchar. Así nacieron los <strong>Vigilantes de Azeroth</strong>. 
+                <br><br>
+                Jurando lealtad eterna al León de la Alianza, esta orden se asentó en las fronteras del mundo conocido. No visten armaduras relucientes para los desfiles en el Barrio de los Enanos; vigilan las grietas de la Realidad y los frentes más hostiles, conteniendo los susurros del Vacío, las amenazas de la Horda y los vestigios de antiguos males. Cuando las trompetas de guerra suenan, los Vigilantes ya llevan ventaja en el campo de batalla.
+            </p>
+        </div>
+
+        <!-- SECCIÓN ORIGINAL: GENERAL -->
         <div class="tarjeta">
             <h2>🛡️ Sobre la Hermandad</h2>
-            <p>Somos una orden dedicada a defender Azeroth contra cualquier amenaza. Reunimos a los mejores guerreros, magos y pícaros comprometidos con el progreso, el compañerismo y la superación en cada mazmorra y banda.</p>
+            <p>Somos una orden de la Alianza dedicada a defender el reino de cualquier amenaza. Reunimos a los combatientes más tenaces comprometidos con el compañerismo y la superación en cada mazmorra y banda.</p>
         </div>
 
         <div class="tarjeta">
             <h2>⚔️ Objetivos Activos</h2>
-            <p>Nuestro enfoque actual se centra en el avance de bandas (Raids) en dificultad mítica, la conquista de míticas+ de alto nivel y el dominio del campo de batalla en PvP puntuado de manera organizada.</p>
+            <p>Nuestro enfoque se centra en el avance estratégico de bandas (Raids), la conquista de mazmorras míticas de alto nivel y el dominio táctico de los campos de batalla organizados.</p>
         </div>
 
         <div class="tarjeta">
             <h2>📜 Código de Honor</h2>
-            <p>Lealtad, respeto mutuo y perseverancia. En Vigilantes de Azeroth dejamos a un lado el ego individual para priorizar el éxito del grupo. Cada miembro cuenta, cada wipe nos hace más fuertes.</p>
+            <p>Lealtad a la Alianza, respeto mutuo y perseverancia. Dejamos a un lado el ego individual para priorizar el éxito del grupo. Cada miembro cuenta, cada derrota nos hace más fuertes.</p>
         </div>
+
+        <!-- SECCIÓN 3: EL CONSEJO DE FUNDADORES -->
+        <div class="tarjeta" style="grid-column: 1 / -1;">
+            <h2>👑 El Alto Consejo (5 Fundadores)</h2>
+            <p>La orden está gobernada por un triunvirato de Grandes Maestros respaldado por oficiales especialistas de élite:</p>
+            
+            <div class="consejo-grid">
+                <!-- GM 1: VIKTOR -->
+                <div class="miembro">
+                    <div class="icono">👑</div>
+                    <strong>Viktor</strong>
+                    <div class="rango">Guild Master</div>
+                    <div class="lore-corto">El estratega principal. Encargado de coordinar las campañas militares de la orden y guiar las espadas de la Alianza hacia la victoria.</div>
+                </div>
+
+                <!-- GM 2: PESCADITO -->
+                <div class="miembro">
+                    <div class="icono">🔱</div>
+                    <strong>Pescadito</strong>
+                    <div class="rango">Guild Master</div>
+                    <div class="lore-corto">El pilar místico. Capaz de mantener la calma en los peores wipes y reconducir las fuerzas del grupo cuando todo parece perdido.</div>
+                </div>
+
+                <!-- GM 3: JUAREZOTE -->
+                <div class="miembro">
+                    <div class="icono">🛡️</div>
+                    <strong>Juarezote</strong>
+                    <div class="rango">Guild Master</div>
+                    <div class="lore-corto">La vanguardia inquebrantable. Un líder imponente cuya sola presencia en primera línea inspira a los soldados a resistir hasta el final.</div>
+                </div>
+
+                <!-- OFICIAL 1: CALY -->
+                <div class="miembro">
+                    <div class="icono">🪙</div>
+                    <strong>Caly</strong>
+                    <div class="rango">Oficial / Cambiador de Divisas</div>
+                    <div class="lore-corto">Maneja las arcas de la hermandad con puño de hierro. Capaz de cambiar oro, plata y divisas de cualquier rincón del mundo para financiar el banco de raid.</div>
+                </div>
+
+                <!-- OFICIAL 2: ADENABOR -->
+                <div class="miembro">
+                    <div class="icono">📣</div>
+                    <strong>Adenabor</strong>
+                    <div class="rango">Oficial / Atención al Cliente</div>
+                    <div class="lore-corto">La voz de la paciencia. Resuelve disputas internas, atiende las quejas de los taberneros y asiste a los nuevos reclutas cuando se pierden en el mapa.</div>
+                </div>
+            </div>
+        </div>
+
     </div>
 
     <a href="#" class="btn-unirse">Unirse a las Filas</a>
