@@ -13,6 +13,11 @@
             --azul-alianza: #1d4ed8;
             --texto-claro: #e2e8f0;
             --texto-gris: #94a3b8;
+            /* Colores Oficiales de Clases de WoW */
+            --color-guerrero: #c69b6d;
+            --color-mago: #3fc7eb;
+            --color-sacerdote: #ffffff;
+            --color-druida: #ff7c0a;
         }
 
         body {
@@ -55,7 +60,7 @@
             box-shadow: 0 4px 20px rgba(0,0,0,0.6);
         }
 
-        /* MENÚ SUPERIOR DE PESTAÑAS */
+        /* MENÚ SUPERIOR DE PESTAÑAS INTERACTIVAS */
         nav {
             display: flex;
             justify-content: center;
@@ -95,11 +100,11 @@
 
         /* CONTENEDORES DE SECCIÓN */
         .seccion-contenido {
-            display: none; /* Oculto por defecto */
+            display: none;
         }
 
         .seccion-contenido.active {
-            display: block; /* Muestra solo la activa */
+            display: block;
         }
 
         .contenedor {
@@ -158,6 +163,46 @@
         .miembro strong { display: block; color: var(--texto-claro); font-size: 1.1rem; }
         .miembro .rango { color: var(--dorado-wow); font-size: 0.85rem; font-weight: bold; text-transform: uppercase; margin: 4px 0 10px 0; }
         .miembro .lore-corto { font-size: 0.8rem; color: var(--texto-gris); line-height: 1.4; }
+
+        /* Estilos de Barras de Rendimiento (Parses / Muro de la Fama) */
+        .contenedor-barras {
+            margin-top: 15px;
+        }
+        .barra-progreso {
+            background-color: #12151c;
+            border-radius: 4px;
+            margin-bottom: 12px;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        .barra-llena {
+            padding: 10px 12px;
+            font-size: 0.85rem;
+            font-weight: bold;
+            color: #000;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        /* Estilos de Tablas (Control / Asistencia) */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            font-size: 0.9rem;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        th {
+            color: var(--dorado-wow);
+            border-bottom: 2px solid var(--dorado-wow);
+        }
+        tr:hover {
+            background-color: rgba(255,255,255,0.02);
+        }
 
         .btn-unirse {
             display: block;
@@ -226,25 +271,3 @@
 
             <div class="tarjeta">
                 <h2>📜 Código de Honor</h2>
-                <p>Lealtad a la Alianza, respeto mutuo y perseverancia. Dejamos a un lado el ego individual para priorizar el éxito del grupo. Cada miembro cuenta, cada derrota nos hace más fuertes.</p>
-            </div>
-
-            <div class="tarjeta" style="grid-column: 1 / -1;">
-                <h2>👑 El Alto Consejo (5 Fundadores)</h2>
-                <div class="consejo-grid">
-                    <div class="miembro">
-                        <div class="icono">👑</div>
-                        <strong>Viktor</strong>
-                        <div class="rango">Guild Master</div>
-                        <div class="lore-corto">El estratega principal. Encargado de coordinar las campaigns militares de la orden y guiar las espadas de la Alianza hacia la victoria.</div>
-                    </div>
-                    <div class="miembro">
-                        <div class="icono">🔱</div>
-                        <strong>Pescadito</strong>
-                        <div class="rango">Guild Master</div>
-                        <div class="lore-corto">El pilar místico. Capaz de mantener la calma en los peores wipes y reconducir las fuerzas del grupo cuando todo parece perdido.</div>
-                    </div>
-                    <div class="miembro">
-                        <div class="icono">🛡️</div>
-                        <strong>Juarezote</strong>
-                        <div class="rango">Guild Master</div>
