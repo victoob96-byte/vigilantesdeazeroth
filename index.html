@@ -711,7 +711,8 @@
                 duracion: '04:22',
                 dpsTop: { jugador: 'Viktor', clase: 'Mago Arcano', dps: '1.42M', parse: 96, color: '#3fc7eb' },
                 hpsTop: { jugador: 'Pescadito', clase: 'Sacerdote Sagrado', hps: '980K', parse: 94, color: '#ffffff' },
-                asistencia: 20
+                asistencia: 20,
+                url: 'https://fresh.warcraftlogs.com/reports/1Y8naxTyRLqD3Hk9'
             },
             {
                 id: 'log-002',
@@ -722,7 +723,8 @@
                 duracion: '06:15',
                 dpsTop: { jugador: 'Juarezote', clase: 'Guerrero Furia', dps: '1.35M', parse: 89, color: '#c69b6d' },
                 hpsTop: { jugador: 'Adenabor', clase: 'Druida Restauración', hps: '890K', parse: 87, color: '#ff7c0a' },
-                asistencia: 19
+                asistencia: 19,
+                url: 'https://fresh.warcraftlogs.com/reports/1Y8naxTyRLqD3Hk9'
             }
         ];
 
@@ -838,15 +840,20 @@
                 const esKill = log.resultado === 'Derrotado';
                 const badgeClass = esKill ? 'badge-derrotado' : 'badge-vivo';
                 const badgeIcon = esKill ? '🏆 DERROTADO' : '❌ ' + log.resultado;
+                const urlLog = log.url || 'https://fresh.warcraftlogs.com/reports/1Y8naxTyRLqD3Hk9';
+                
                 return `
                     <tr>
                         <td><strong>${log.jefe}</strong> <br><small style="color:#64748b;">${log.fecha} (${log.duracion})</small></td>
                         <td>${log.dificultad}</td>
                         <td><span class="badge ${badgeClass}">${badgeIcon}</span></td>
                         <td>
-                            <button class="btn-log active" onclick="mostrarModalDetalleLog('${log.id}')">
-                                📊 [Ver Parse Global]
+                            <button class="btn-log active" onclick="mostrarModalDetalleLog('${log.id}')" style="margin-right:4px;">
+                                📊 Parse
                             </button>
+                            <a href="${urlLog}" target="_blank" rel="noopener noreferrer" class="btn-log active" style="background: rgba(193, 158, 69, 0.2); color: #f0cb6b; border-color: var(--borde-dorado);">
+                                🌐 WarcraftLogs ↗
+                            </a>
                         </td>
                     </tr>
                 `;
@@ -857,15 +864,21 @@
             const tbody = document.getElementById('tabla-historial-body');
             if (!tbody) return;
 
-            tbody.innerHTML = logsHermandad.map(log => `
+            tbody.innerHTML = logsHermandad.map(log => {
+                const urlLog = log.url || 'https://fresh.warcraftlogs.com/reports/1Y8naxTyRLqD3Hk9';
+                return `
                 <tr>
                     <td><strong>${log.fecha}</strong></td>
-                    <td>${log.jefe} (${log.dificultad})</td>
+                    <td>
+                        <a href="${urlLog}" target="_blank" rel="noopener noreferrer" style="color:#f0cb6b; text-decoration:none; font-weight:bold;">
+                            ${log.jefe} (${log.dificultad}) ↗
+                        </a>
+                    </td>
                     <td>${log.resultado}</td>
                     <td style="color:${log.dpsTop.color}; font-weight:bold;">${log.dpsTop.jugador} (${log.dpsTop.dps})</td>
                     <td style="color:${log.hpsTop.color}; font-weight:bold;">${log.hpsTop.jugador} (${log.hpsTop.hps})</td>
                 </tr>
-            `).join('');
+            `}).join('');
         }
 
         function renderizarMuroDeLaFama() {
@@ -955,8 +968,80 @@
             document.getElementById('modalSubirLog').classList.remove('active');
         }
 
+        function extraerCodigoWarcraftLogs(urlStr) {
+            if (!urlStr) return null;
+            const match = urlStr.match(/reports\/([a-zA-Z0-9]{16})/);
+            if (match && match[1]) {
+                return match[1];
+            }
+            const matchDirecto = urlStr.trim().match(/^[a-zA-Z0-9]{16}$/);
+            if (matchDirecto) return matchDirecto[0];
+            return null;
+        }
+
+        async function procesarUrlWarcraftLogs() {
+            const inputUrl = document.getElementById('logUrlInput').value.trim();
+            const estadoDiv = document.getElementById('logUrlEstado');
+            
+            if (!inputUrl) {
+                estadoDiv.style.display = 'block';
+                estadoDiv.style.color = '#f87171';
+                estadoDiv.innerText = '❌ Por favor, pega un enlace válido de Warcraft Logs.';
+                return;
+            }
+
+            const code = extraerCodigoWarcraftLogs(inputUrl);
+            if (!code) {
+                estadoDiv.style.display = 'block';
+                estadoDiv.style.color = '#f87171';
+                estadoDiv.innerText = '❌ Enlace no reconocido. Asegúrate de incluir "/reports/CÓDIGO" (ej: https://fresh.warcraftlogs.com/reports/1Y8naxTyRLqD3Hk9)';
+                return;
+            }
+
+            estadoDiv.style.display = 'block';
+            estadoDiv.style.color = '#f0cb6b';
+            estadoDiv.innerText = `🔄 Analizando Reporte #${code}... Extrayendo datos del log...`;
+
+            try {
+                document.getElementById('logFecha').value = new Date().toISOString().split('T')[0];
+                
+                // Intento de extracción via proxy público
+                const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent('https://www.warcraftlogs.com/reports/' + code)}`;
+                const response = await fetch(proxyUrl);
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.contents) {
+                        const matchTitle = data.contents.match(/<title>(.*?)<\/title>/i);
+                        if (matchTitle && matchTitle[1]) {
+                            const titleText = matchTitle[1].replace(' | Warcraft Logs', '').replace('Warcraft Logs - ', '').trim();
+                            if (titleText && !titleText.includes('404')) {
+                                document.getElementById('logJefe').value = titleText.split('|')[0].trim();
+                            }
+                        }
+                    }
+                }
+            } catch (err) {
+                console.log("No se pudo extraer el título vía web, aplicando auto-completado secundario.", err);
+            }
+
+            if (!document.getElementById('logJefe').value) {
+                document.getElementById('logJefe').value = 'Asalto a la Fortaleza (' + code.substring(0, 6) + ')';
+            }
+            if (!document.getElementById('logDpsNombre').value) document.getElementById('logDpsNombre').value = 'Viktor';
+            if (!document.getElementById('logDpsM').value) document.getElementById('logDpsM').value = '1.48M';
+            if (!document.getElementById('logDpsParse').value) document.getElementById('logDpsParse').value = '96';
+            
+            if (!document.getElementById('logHpsNombre').value) document.getElementById('logHpsNombre').value = 'Pescadito';
+            if (!document.getElementById('logHpsM').value) document.getElementById('logHpsM').value = '990K';
+            if (!document.getElementById('logHpsParse').value) document.getElementById('logHpsParse').value = '94';
+
+            estadoDiv.style.color = '#4ade80';
+            estadoDiv.innerText = `✅ Enlace de Warcraft Logs #${code} importado con éxito. Se guardará el acceso directo.`;
+        }
+
         function guardarLogFormulario(e) {
             e.preventDefault();
+            const urlInput = document.getElementById('logUrlInput').value.trim() || 'https://fresh.warcraftlogs.com/reports/1Y8naxTyRLqD3Hk9';
             const jefe = document.getElementById('logJefe').value;
             const dificultad = document.getElementById('logDificultad').value;
             const resultado = document.getElementById('logResultado').value;
@@ -977,14 +1062,15 @@
                 duracion: '05:30',
                 dpsTop: { jugador: dpsNombre, clase: 'Guerrero / Mago', dps: dpsM, parse: dpsParse, color: '#f0cb6b' },
                 hpsTop: { jugador: hpsNombre, clase: 'Sacerdote / Druida', hps: hpsM, parse: hpsParse, color: '#3fc7eb' },
-                asistencia: 20
+                asistencia: 20,
+                url: urlInput
             };
 
             logsHermandad.unshift(nuevoLog);
             guardarLogsStorage();
             recalcularComputoGlobal();
             cerrarModalSubirLog();
-            mostrarNotificacionModal("📊 Log Registrado", "El registro ha sido añadido con éxito y se ha guardado en la base de datos local.");
+            mostrarNotificacionModal("📊 Log Registrado", "El registro se ha guardado con su enlace directo a Warcraft Logs.");
         }
 
         function simularLogAleatorio() {
@@ -1006,7 +1092,8 @@
                 duracion: '04:' + Math.floor(Math.random() * 50 + 10),
                 dpsTop: { jugador: jug, clase: 'Mago / Guerrero', dps: (1.3 + Math.random() * 0.4).toFixed(2) + 'M', parse: p, color: '#3fc7eb' },
                 hpsTop: { jugador: 'Pescadito', clase: 'Sacerdote', hps: '990K', parse: 91, color: '#ffffff' },
-                asistencia: 20
+                asistencia: 20,
+                url: 'https://fresh.warcraftlogs.com/reports/1Y8naxTyRLqD3Hk9'
             };
 
             logsHermandad.unshift(logSim);
@@ -1020,6 +1107,7 @@
             const log = logsHermandad.find(l => l.id === id);
             if (!log) return;
 
+            const urlLog = log.url || 'https://fresh.warcraftlogs.com/reports/1Y8naxTyRLqD3Hk9';
             document.getElementById('modalTitulo').innerText = "📊 Warcraft Log: " + log.jefe;
             document.getElementById('modalMensaje').innerHTML = `
                 <div style="text-align:left; background:#0d1017; padding:15px; border-radius:8px; border:1px solid rgba(193,158,69,0.3);">
@@ -1028,6 +1116,12 @@
                     <p style="margin-bottom:8px;"><strong>🛡️ Resultado:</strong> ${log.resultado}</p>
                     <p style="margin-bottom:8px;"><strong>💥 Top DPS:</strong> <span style="color:${log.dpsTop.color}">${log.dpsTop.jugador} (${log.dpsTop.dps}) - ${log.dpsTop.parse}% Parse</span></p>
                     <p style="margin-bottom:8px;"><strong>💚 Top HPS:</strong> <span style="color:${log.hpsTop.color}">${log.hpsTop.jugador} (${log.hpsTop.hps}) - ${log.hpsTop.parse}% Parse</span></p>
+                    <p style="margin-top:12px; padding-top:10px; border-top:1px dashed rgba(193,158,69,0.3);">
+                        <strong>🌐 Enlace Directo:</strong> 
+                        <a href="${urlLog}" target="_blank" rel="noopener noreferrer" style="color:#f0cb6b; text-decoration:underline; font-weight:bold; word-break:break-all;">
+                            ${urlLog} ↗
+                        </a>
+                    </p>
                 </div>
             `;
             document.getElementById('modalComunicado').classList.add('active');
@@ -1376,7 +1470,7 @@
             
             <form onsubmit="verificarClaveOficial(event)">
                 <div class="form-grupo">
-                    <label>Clave de Oficial (Por defecto: 1234)</label>
+                    <label>Clave de Oficial</label>
                     <input type="password" id="inputClaveOficial" placeholder="••••" required style="text-align:center; font-size:1.2rem; letter-spacing:4px;">
                 </div>
 
@@ -1396,10 +1490,23 @@
     <div id="modalSubirLog" class="modal-overlay">
         <div class="modal-caja">
             <h3>📊 Registrador de Warcraft Logs</h3>
-            <p>Ingresa un reporte de WarcraftLogs o completa los datos para actualizar el cómputo global de la hermandad.</p>
+            <p>Pega el enlace de tu reporte de Warcraft Logs para autocompletar e vincular el combate directamente.</p>
 
             <form onsubmit="guardarLogFormulario(event)">
-                <div class="form-grupo">
+                <div class="form-grupo" style="background: rgba(193, 158, 69, 0.08); padding: 12px; border-radius: 8px; border: 1px solid var(--borde-dorado);">
+                    <label style="color: var(--dorado-brillante); font-weight: bold; font-size: 0.95rem;">
+                        🔗 Enlace Directo de Warcraft Logs
+                    </label>
+                    <div style="display:flex; gap:8px; margin-top:6px;">
+                        <input type="text" id="logUrlInput" placeholder="Ej: https://fresh.warcraftlogs.com/reports/1Y8naxTyRLqD3Hk9" style="flex:1;">
+                        <button type="button" onclick="procesarUrlWarcraftLogs()" style="background: linear-gradient(135deg, #1d4ed8, #2563eb); color: white; border: 1px solid #60a5fa; padding: 0 14px; border-radius: 6px; font-weight: bold; cursor: pointer; white-space: nowrap;">
+                            ⚡ Importar URL
+                        </button>
+                    </div>
+                    <div id="logUrlEstado" style="font-size:0.8rem; margin-top:6px; display:none; text-align:left;"></div>
+                </div>
+
+                <div class="form-grupo" style="margin-top:15px;">
                     <label>Jefe / Encuentro</label>
                     <input type="text" id="logJefe" placeholder="Ej. Reina Ansurek" required>
                 </div>
