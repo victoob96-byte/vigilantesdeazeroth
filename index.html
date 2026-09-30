@@ -151,23 +151,6 @@
             filter: brightness(1.08);
         }
 
-        .btn-cambiar-imagen {
-            display: inline-block;
-            margin-top: 8px;
-            font-size: 0.75rem;
-            color: var(--texto-gris);
-            background: rgba(18, 23, 34, 0.8);
-            border: 1px dashed var(--borde-dorado);
-            padding: 4px 10px;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        .btn-cambiar-imagen:hover {
-            color: var(--dorado-brillante);
-            border-color: var(--dorado-brillante);
-        }
-
         .metricas-header {
             display: flex;
             gap: 12px;
@@ -700,20 +683,29 @@
         const CLAVE_OFICIAL_SECRETA = "1234";
         let logAEliminarId = null;
 
-        // Estado inicial sin datos ficticios para empezar limpio
+        // Estado inicial de logs completamente vacío (sin ningún dato de prueba)
         let logsHermandad = [];
 
         // Estado de permisos del usuario actual
         let esOficial = localStorage.getItem('vigilantes_es_oficial') === 'true';
 
-        // Cargar logs guardados en el navegador local
+        // Cargar logs guardados en el navegador y purgar automáticamente datos de prueba viejos
         function cargarLogsStorage() {
             const guardados = localStorage.getItem('vigilantes_logs');
             if (guardados) {
                 try {
-                    logsHermandad = JSON.parse(guardados);
+                    let parsed = JSON.parse(guardados);
+                    // Purgar logs de prueba de versiones anteriores si existen en el navegador
+                    const nombresEjemplo = ["Lord Tuétano", "Toravon el Vigía de Piedra", "Algalon el Observador", "Anub'arak", "El Rey Exánime"];
+                    parsed = parsed.filter(log => 
+                        !nombresEjemplo.includes(log.jefe) && 
+                        log.id !== 'log-1' && log.id !== 'log-2' && log.id !== 'log-3' && log.id !== 'log-4' && log.id !== 'log-5'
+                    );
+                    logsHermandad = parsed;
+                    localStorage.setItem('vigilantes_logs', JSON.stringify(logsHermandad));
                 } catch (e) {
                     console.error("Error al cargar los logs guardados", e);
+                    logsHermandad = [];
                 }
             }
         }
@@ -800,7 +792,8 @@
                     badgeContenedor.innerHTML = `
                         <div class="header-stat-box" style="border-color: rgba(34, 197, 94, 0.5);">
                             <span style="color:#4ade80;">🔑 Modo Oficial</span>
-                            <button onclick="cerrarModoOficial()" style="font-size:0.75rem; background:rgba(239, 68, 68, 0.2); color:#f87171; border:1px solid rgba(239, 68, 68, 0.4); padding:2px 8px; border-radius:4px; cursor:pointer; font-family:'Inter',sans-serif;">Salir</button>
+                            <button onclick="vaciarTodosLosLogs()" style="font-size:0.75rem; background:rgba(239, 68, 68, 0.2); color:#f87171; border:1px solid rgba(239, 68, 68, 0.4); padding:2px 8px; border-radius:4px; cursor:pointer; font-family:'Inter',sans-serif; margin-left:4px;" title="Vaciar todos los registros">🗑️ Limpiar Logs</button>
+                            <button onclick="cerrarModoOficial()" style="font-size:0.75rem; background:rgba(255, 255, 255, 0.1); color:#cbd5e1; border:1px solid rgba(255, 255, 255, 0.2); padding:2px 8px; border-radius:4px; cursor:pointer; font-family:'Inter',sans-serif; margin-left:4px;">Salir</button>
                         </div>
                     `;
                 } else {
@@ -814,6 +807,35 @@
 
             renderizarTablaProgresion();
             renderizarTablaHistorial();
+        }
+
+        function vaciarTodosLosLogs() {
+            if (!esOficial) return;
+            document.getElementById('modalTitulo').innerText = "🗑️ Vaciar Todos los Logs";
+            document.getElementById('modalMensaje').innerHTML = `
+                <div style="text-align:center; padding:10px 0;">
+                    <p style="font-size:1.05rem; color:#f1f5f9; margin-bottom:15px;">
+                        ¿Deseas eliminar <strong>TODOS</strong> los logs y reiniciar el cómputo global a cero?
+                    </p>
+                    <div style="display:flex; gap:12px; justify-content:center;">
+                        <button onclick="confirmarVaciarLogs()" class="btn-cerrar-modal" style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); color:#ffffff;">
+                            🗑️ Sí, Vaciar Todo
+                        </button>
+                        <button onclick="cerrarModal()" class="btn-secundario-modal">
+                            Cancelar
+                        </button>
+                    </div>
+                </div>
+            `;
+            document.getElementById('modalComunicado').classList.add('active');
+        }
+
+        function confirmarVaciarLogs() {
+            logsHermandad = [];
+            guardarLogsStorage();
+            recalcularComputoGlobal();
+            cerrarModal();
+            mostrarNotificacionModal("✨ Registros Reiniciados", "Se han eliminado todos los logs guardados.");
         }
 
         function solicitarEliminarLog(id) {
@@ -854,7 +876,7 @@
             guardarLogsStorage();
             recalcularComputoGlobal();
             cerrarModal();
-            mostrarNotificacionModal("🗑️ Log Eliminado", "El reporte ha sido eliminado correctamente del cómputo de la hermandad.");
+            mostrarNotificacionModal("🗑️ Log Eliminado", "El reporte ha sido eliminado correctamente.");
         }
 
         function renderizarTablaProgresion() {
@@ -862,7 +884,7 @@
             if (!tbody) return;
 
             if (logsHermandad.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#94a3b8; padding:25px; font-style:italic;">No hay logs registrados aún. Haz clic en "Subir Warcraft Log" para registrar tus primeros combates.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#94a3b8; padding:30px; font-style:italic;">No hay logs registrados aún. Haz clic en "Subir Warcraft Log" para registrar tus combates reales.</td></tr>`;
                 return;
             }
 
@@ -879,7 +901,7 @@
                         <td><span class="badge ${badgeClass}">${badgeIcon}</span></td>
                         <td>
                             <button class="btn-log active" onclick="mostrarModalDetalleLog('${log.id}')" style="margin-right:4px;">
-                                📊 Parse
+                                📊 Detalle
                             </button>
                             <a href="${urlLog}" target="_blank" rel="noopener noreferrer" class="btn-log active" style="background: rgba(193, 158, 69, 0.2); color: #f0cb6b; border-color: var(--borde-dorado); margin-right:4px;">
                                 🌐 WarcraftLogs ↗
@@ -913,12 +935,14 @@
 
             if (logsHermandad.length === 0) {
                 const colSpan = esOficial ? 6 : 5;
-                tbody.innerHTML = `<tr><td colspan="${colSpan}" style="text-align:center; color:#94a3b8; padding:25px; font-style:italic;">No hay registros en el historial. Los logs procesados aparecerán aquí.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="${colSpan}" style="text-align:center; color:#94a3b8; padding:30px; font-style:italic;">No hay registros en el historial. Los logs procesados aparecerán aquí.</td></tr>`;
                 return;
             }
 
             tbody.innerHTML = logsHermandad.map(log => {
                 const urlLog = log.url || 'https://warcraftlogs.com';
+                const dpsText = log.dpsTop.jugador ? `${log.dpsTop.jugador} (${log.dpsTop.dps})` : '-';
+                const hpsText = log.hpsTop.jugador ? `${log.hpsTop.jugador} (${log.hpsTop.hps})` : '-';
                 return `
                 <tr>
                     <td><strong>${log.fecha}</strong></td>
@@ -928,8 +952,8 @@
                         </a>
                     </td>
                     <td>${log.resultado}</td>
-                    <td style="color:${log.dpsTop.color}; font-weight:bold;">${log.dpsTop.jugador} (${log.dpsTop.dps})</td>
-                    <td style="color:${log.hpsTop.color}; font-weight:bold;">${log.hpsTop.jugador} (${log.hpsTop.hps})</td>
+                    <td style="color:${log.dpsTop.color}; font-weight:bold;">${dpsText}</td>
+                    <td style="color:${log.hpsTop.color}; font-weight:bold;">${hpsText}</td>
                     ${esOficial ? `
                         <td>
                             <button onclick="solicitarEliminarLog('${log.id}')" style="background: rgba(239, 68, 68, 0.2); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.5); padding: 4px 10px; border-radius: 4px; cursor: pointer; font-size: 0.8rem; font-weight:bold;">
@@ -948,57 +972,45 @@
             if (!contDPS || !contHPS) return;
 
             if (logsHermandad.length === 0) {
-                contDPS.innerHTML = `<p style="color:#94a3b8; font-style:italic; font-family:'Inter',sans-serif; text-align:center; padding:15px;">No hay registros de DPS aún. Sube un log para visualizar las estadísticas.</p>`;
-                contHPS.innerHTML = `<p style="color:#94a3b8; font-style:italic; font-family:'Inter',sans-serif; text-align:center; padding:15px;">No hay registros de HPS aún. Sube un log para visualizar las estadísticas.</p>`;
+                contDPS.innerHTML = `<p style="color:#94a3b8; font-style:italic; font-family:'Inter',sans-serif; text-align:center; padding:25px;">No hay registros de DPS aún. Sube un log para visualizar las estadísticas.</p>`;
+                contHPS.innerHTML = `<p style="color:#94a3b8; font-style:italic; font-family:'Inter',sans-serif; text-align:center; padding:25px;">No hay registros de HPS aún. Sube un log para visualizar las estadísticas.</p>`;
                 return;
             }
 
-            const copiaDps = [...logsHermandad].sort((a, b) => b.dpsTop.parse - a.dpsTop.parse);
-            contDPS.innerHTML = copiaDps.slice(0, 3).map(l => `
-                <div class="etiqueta-barra">
-                    <span style="color: ${l.dpsTop.color};">${l.dpsTop.jugador} (${l.dpsTop.clase})</span>
-                    <span>${l.dpsTop.parse}% Parse (${l.dpsTop.dps})</span>
-                </div>
-                <div class="barra-progreso">
-                    <div class="barra-llena" style="width: ${l.dpsTop.parse}%; background-color: ${l.dpsTop.color};">
-                        <span>${l.jefe}</span>
-                        <span>${l.dpsTop.parse}%</span>
+            const copiaDps = [...logsHermandad].filter(l => l.dpsTop && l.dpsTop.jugador).sort((a, b) => (b.dpsTop.parse || 0) - (a.dpsTop.parse || 0));
+            if (copiaDps.length === 0) {
+                contDPS.innerHTML = `<p style="color:#94a3b8; font-style:italic; font-family:'Inter',sans-serif; text-align:center; padding:25px;">Sin datos de DPS especificados en los logs.</p>`;
+            } else {
+                contDPS.innerHTML = copiaDps.slice(0, 3).map(l => `
+                    <div class="etiqueta-barra">
+                        <span style="color: ${l.dpsTop.color};">${l.dpsTop.jugador} (${l.dpsTop.clase || 'DPS'})</span>
+                        <span>${l.dpsTop.parse || 0}% Parse (${l.dpsTop.dps || '-'})</span>
                     </div>
-                </div>
-            `).join('');
-
-            const copiaHps = [...logsHermandad].sort((a, b) => b.hpsTop.parse - a.hpsTop.parse);
-            contHPS.innerHTML = copiaHps.slice(0, 3).map(l => `
-                <div class="etiqueta-barra">
-                    <span style="color: ${l.hpsTop.color};">${l.hpsTop.jugador} (${l.hpsTop.clase})</span>
-                    <span>${l.hpsTop.parse}% Parse (${l.hpsTop.hps})</span>
-                </div>
-                <div class="barra-progreso">
-                    <div class="barra-llena" style="width: ${l.hpsTop.parse}%; background-color: ${l.hpsTop.color};">
-                        <span>${l.jefe}</span>
-                        <span>${l.hpsTop.parse}%</span>
+                    <div class="barra-progreso">
+                        <div class="barra-llena" style="width: ${Math.max(l.dpsTop.parse || 10, 15)}%; background-color: ${l.dpsTop.color};">
+                            <span>${l.jefe}</span>
+                            <span>${l.dpsTop.parse || 0}%</span>
+                        </div>
                     </div>
-                </div>
-            `).join('');
-        }
-
-        function cambiarImagenPerfil(input) {
-            if (input.files && input.files[0]) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    document.getElementById('guild-banner-img').src = e.target.result;
-                    localStorage.setItem('vigilantes_banner_custom', e.target.result);
-                }
-                reader.readAsDataURL(input.files[0]);
+                `).join('');
             }
-        }
 
-        function cambiarImagenUrl() {
-            const url = prompt("Introduce la URL de tu imagen en GitHub:");
-            if (url && url.trim() !== '') {
-                const img = document.getElementById('guild-banner-img');
-                img.src = url.trim();
-                localStorage.setItem('vigilantes_banner_custom', url.trim());
+            const copiaHps = [...logsHermandad].filter(l => l.hpsTop && l.hpsTop.jugador).sort((a, b) => (b.hpsTop.parse || 0) - (a.hpsTop.parse || 0));
+            if (copiaHps.length === 0) {
+                contHPS.innerHTML = `<p style="color:#94a3b8; font-style:italic; font-family:'Inter',sans-serif; text-align:center; padding:25px;">Sin datos de HPS especificados en los logs.</p>`;
+            } else {
+                contHPS.innerHTML = copiaHps.slice(0, 3).map(l => `
+                    <div class="etiqueta-barra">
+                        <span style="color: ${l.hpsTop.color};">${l.hpsTop.jugador} (${l.hpsTop.clase || 'Sanador'})</span>
+                        <span>${l.hpsTop.parse || 0}% Parse (${l.hpsTop.hps || '-'})</span>
+                    </div>
+                    <div class="barra-progreso">
+                        <div class="barra-llena" style="width: ${Math.max(l.hpsTop.parse || 10, 15)}%; background-color: ${l.hpsTop.color};">
+                            <span>${l.jefe}</span>
+                            <span>${l.hpsTop.parse || 0}%</span>
+                        </div>
+                    </div>
+                `).join('');
             }
         }
 
@@ -1090,16 +1102,9 @@
             if (!document.getElementById('logJefe').value) {
                 document.getElementById('logJefe').value = 'Encuentro de Raid (' + code.substring(0, 6) + ')';
             }
-            if (!document.getElementById('logDpsNombre').value) document.getElementById('logDpsNombre').value = 'Top DPS';
-            if (!document.getElementById('logDpsM').value) document.getElementById('logDpsM').value = '1.20M';
-            if (!document.getElementById('logDpsParse').value) document.getElementById('logDpsParse').value = '90';
-            
-            if (!document.getElementById('logHpsNombre').value) document.getElementById('logHpsNombre').value = 'Top Sanador';
-            if (!document.getElementById('logHpsM').value) document.getElementById('logHpsM').value = '850K';
-            if (!document.getElementById('logHpsParse').value) document.getElementById('logHpsParse').value = '90';
 
             estadoDiv.style.color = '#4ade80';
-            estadoDiv.innerText = `✅ Enlace de Warcraft Logs #${code} importado con éxito.`;
+            estadoDiv.innerText = `✅ Enlace de Warcraft Logs #${code} importado con éxito. Puedes ajustar los campos opcionales si lo deseas.`;
         }
 
         function guardarLogFormulario(e) {
@@ -1108,12 +1113,12 @@
             const jefe = document.getElementById('logJefe').value;
             const resultado = document.getElementById('logResultado').value;
             const fecha = document.getElementById('logFecha').value || new Date().toISOString().split('T')[0];
-            const dpsNombre = document.getElementById('logDpsNombre').value || 'Jugador DPS';
-            const dpsM = document.getElementById('logDpsM').value || '1.00M';
-            const dpsParse = parseInt(document.getElementById('logDpsParse').value) || 85;
-            const hpsNombre = document.getElementById('logHpsNombre').value || 'Jugador Sanador';
-            const hpsM = document.getElementById('logHpsM').value || '750K';
-            const hpsParse = parseInt(document.getElementById('logHpsParse').value) || 85;
+            const dpsNombre = document.getElementById('logDpsNombre').value;
+            const dpsM = document.getElementById('logDpsM').value;
+            const dpsParse = parseInt(document.getElementById('logDpsParse').value) || 0;
+            const hpsNombre = document.getElementById('logHpsNombre').value;
+            const hpsM = document.getElementById('logHpsM').value;
+            const hpsParse = parseInt(document.getElementById('logHpsParse').value) || 0;
 
             const nuevoLog = {
                 id: 'log-' + Date.now(),
@@ -1132,7 +1137,7 @@
             guardarLogsStorage();
             recalcularComputoGlobal();
             cerrarModalSubirLog();
-            mostrarNotificacionModal("📊 Log Registrado", "El registro se ha guardado correctamente con su enlace a Warcraft Logs.");
+            mostrarNotificacionModal("📊 Log Registrado", "El registro se ha guardado correctamente en las estadísticas de la hermandad.");
         }
 
         function mostrarModalDetalleLog(id) {
@@ -1142,6 +1147,9 @@
             const urlLog = log.url || 'https://warcraftlogs.com';
             document.getElementById('modalTitulo').innerText = "📊 Warcraft Log: " + log.jefe;
             
+            const dpsInfo = log.dpsTop.jugador ? `<p style="margin-bottom:8px;"><strong>💥 Top DPS:</strong> <span style="color:${log.dpsTop.color}">${log.dpsTop.jugador} (${log.dpsTop.dps || '-'}) - ${log.dpsTop.parse}% Parse</span></p>` : '';
+            const hpsInfo = log.hpsTop.jugador ? `<p style="margin-bottom:8px;"><strong>💚 Top HPS:</strong> <span style="color:${log.hpsTop.color}">${log.hpsTop.jugador} (${log.hpsTop.hps || '-'}) - ${log.hpsTop.parse}% Parse</span></p>` : '';
+
             const botonBorrarModal = esOficial ? `
                 <div style="margin-top:15px; padding-top:12px; border-top:1px solid rgba(239, 68, 68, 0.3); text-align:right;">
                     <button onclick="solicitarEliminarLog('${log.id}')" style="background: rgba(239, 68, 68, 0.2); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.5); padding: 6px 14px; border-radius: 4px; cursor: pointer; font-family:'Inter',sans-serif; font-size:0.85rem; font-weight:600;">
@@ -1154,9 +1162,10 @@
                 <div style="text-align:left; background:#0d1017; padding:15px; border-radius:8px; border:1px solid rgba(193,158,69,0.3);">
                     <p style="margin-bottom:8px;"><strong>🗓️ Fecha:</strong> ${log.fecha}</p>
                     <p style="margin-bottom:8px;"><strong>⚔️ Encuentro:</strong> ${log.jefe}</p>
-                    <p style="margin-bottom:8px;"><strong>🛡️ Resultado:</strong> ${log.resultado}</p>
-                    <p style="margin-bottom:8px;"><strong>💥 Top DPS:</strong> <span style="color:${log.dpsTop.color}">${log.dpsTop.jugador} (${log.dpsTop.dps}) - ${log.dpsTop.parse}% Parse</span></p>
-                    <p style="margin-bottom:8px;"><strong>💚 Top HPS:</strong> <span style="color:${log.hpsTop.color}">${log.hpsTop.jugador} (${log.hpsTop.hps}) - ${log.hpsTop.parse}% Parse</span></p>
+                    <p style="margin-bottom:8px;"><strong>🛡️ Dificultad:</strong> Única (WoW Forever)</p>
+                    <p style="margin-bottom:8px;"><strong>🛡️️ Resultado:</strong> ${log.resultado}</p>
+                    ${dpsInfo}
+                    ${hpsInfo}
                     <p style="margin-top:12px; padding-top:10px; border-top:1px dashed rgba(193,158,69,0.3);">
                         <strong>🌐 Enlace Directo:</strong> 
                         <a href="${urlLog}" target="_blank" rel="noopener noreferrer" style="color:#f0cb6b; text-decoration:underline; font-weight:bold; word-break:break-all;">
@@ -1189,12 +1198,6 @@
             cargarLogsStorage();
             recalcularComputoGlobal();
             actualizarVisibilidadPermisos();
-
-            const bannerGuardado = localStorage.getItem('vigilantes_banner_custom');
-            if (bannerGuardado) {
-                const img = document.getElementById('guild-banner-img');
-                if (img) img.src = bannerGuardado;
-            }
         };
     </script>
 </head>
@@ -1239,7 +1242,6 @@
         <button class="tab-btn btn-subir-log-nav" onclick="mostrarModalSubirLog()">➕ Subir Warcraft Log</button>
     </nav>
 
-    <!-- 1. PESTAÑA: INICIO -->
     <div id="inicio" class="seccion-contenido active">
         <div class="contenedor">
             <div class="tarjeta" style="grid-column: 1 / -1;">
@@ -1314,7 +1316,6 @@
         </div>
     </div>
 
-    <!-- 2. PESTAÑA: RESUMEN -->
     <div id="resumen" class="seccion-contenido">
         <div class="contenedor">
             <div class="tarjeta" style="grid-column: 1 / -1;">
@@ -1341,7 +1342,6 @@
         </div>
     </div>
 
-    <!-- 3. PESTAÑA: PROGRESIÓN -->
     <div id="progresion" class="seccion-contenido">
         <div class="contenedor">
             <div class="tarjeta" style="grid-column: 1 / -1;">
@@ -1350,7 +1350,7 @@
                     <button class="btn-log active btn-subir-log" onclick="mostrarModalSubirLog()">➕ Subir Warcraft Log</button>
                 </h2>
                 <p style="margin-bottom: 20px;">
-                    Seguimiento en vivo del estado de los encuentros militares extraídos del Cómputo Global:
+                    Seguimiento en vivo del estado de los encuentros militares extraídos del Cómputo Global (Servidor WoW Forever):
                 </p>
 
                 <div class="tabla-contenedor">
@@ -1372,7 +1372,6 @@
         </div>
     </div>
 
-    <!-- 4. PESTAÑA: LOGROS -->
     <div id="logros" class="seccion-contenido">
         <div class="contenedor">
             <div class="tarjeta" style="grid-column: 1 / -1;">
@@ -1384,7 +1383,6 @@
         </div>
     </div>
 
-    <!-- 5. PESTAÑA: RENDIMIENTO -->
     <div id="rendimiento" class="seccion-contenido">
         <div class="contenedor">
             <div class="tarjeta">
@@ -1407,11 +1405,10 @@
         </div>
     </div>
 
-    <!-- 6. PESTAÑA: CONTROL -->
     <div id="control" class="seccion-contenido">
         <div class="contenedor">
             <div class="tarjeta" style="grid-column: 1 / -1;">
-                <h2>⚙️️ Control de Asistencia y Disponibilidad</h2>
+                <h2>⚙ Control de Asistencia y Disponibilidad</h2>
                 <p style="margin-bottom: 20px;">
                     Supervisión del núcleo principal de asalto de cara a mantener la optimización de grupos organizados:
                 </p>
@@ -1428,7 +1425,7 @@
                         </thead>
                         <tbody id="tabla-control-body">
                             <tr>
-                                <td colspan="4" style="text-align:center; color:#94a3b8; padding:25px; font-style:italic;">
+                                <td colspan="4" style="text-align:center; color:#94a3b8; padding:30px; font-style:italic;">
                                     No hay datos de asistencia cargados actualmente.
                                 </td>
                             </tr>
@@ -1439,7 +1436,6 @@
         </div>
     </div>
 
-    <!-- 7. PESTAÑA: HISTORIAL -->
     <div id="historial" class="seccion-contenido">
         <div class="contenedor">
             <div class="tarjeta" style="grid-column: 1 / -1;">
@@ -1468,7 +1464,6 @@
         </div>
     </div>
 
-    <!-- 8. PESTAÑA: LOOT -->
     <div id="loot" class="seccion-contenido">
         <div class="contenedor">
             <div class="tarjeta" style="grid-column: 1 / -1;">
@@ -1485,11 +1480,10 @@
         <p style="color: #64748b; font-size: 0.78rem; margin-top: 5px;">World of Warcraft y Blizzard Entertainment son marcas registradas.</p>
     </footer>
 
-    <!-- MODAL DE ACCESO PARA OFICIALES -->
     <div id="modalLoginOficial" class="modal-overlay">
         <div class="modal-caja" style="max-width: 420px;">
             <h3>🔑 Acceso para Oficiales</h3>
-            <p>Introduce el código de acceso del Alto Consejo para desbloquear el permiso de subida y gestión de logs.</p>
+            <p>Introduce la clave secreta del Alto Consejo para desbloquear los permisos de administración.</p>
             
             <form onsubmit="verificarClaveOficial(event)">
                 <div class="form-grupo">
@@ -1509,7 +1503,6 @@
         </div>
     </div>
 
-    <!-- MODAL PARA SUBIR WARCRAFT LOG -->
     <div id="modalSubirLog" class="modal-overlay">
         <div class="modal-caja">
             <h3>📊 Registrador de Warcraft Logs</h3>
@@ -1531,12 +1524,12 @@
 
                 <div class="form-grupo" style="margin-top:15px;">
                     <label>Jefe / Encuentro</label>
-                    <input type="text" id="logJefe" placeholder="Ej. Primer Jefe de Raid" required>
+                    <input type="text" id="logJefe" placeholder="Nombre del jefe" required>
                 </div>
 
                 <div style="display:flex; gap:10px;">
                     <div class="form-grupo" style="flex:1;">
-                        <label>Dificultad</label>
+                        <label>Dificultad (WoW Forever)</label>
                         <input type="text" id="logDificultad" value="Única" readonly style="opacity:0.8; cursor:not-allowed;">
                     </div>
 
@@ -1556,17 +1549,17 @@
 
                 <div style="display:flex; gap:10px;">
                     <div class="form-grupo" style="flex:1;">
-                        <label>Top DPS (Nombre y Daño)</label>
-                        <input type="text" id="logDpsNombre" placeholder="Ej. TuNombre">
-                        <input type="text" id="logDpsM" placeholder="Ej. 1.45M" style="margin-top:5px;">
-                        <input type="number" id="logDpsParse" placeholder="Parse % (Ej. 95)" style="margin-top:5px;">
+                        <label>Top DPS (Opcional)</label>
+                        <input type="text" id="logDpsNombre" placeholder="Nombre del Jugador">
+                        <input type="text" id="logDpsM" placeholder="Daño (ej: 1.45M)" style="margin-top:5px;">
+                        <input type="number" id="logDpsParse" placeholder="Parse % (ej: 95)" style="margin-top:5px;">
                     </div>
 
                     <div class="form-grupo" style="flex:1;">
-                        <label>Top HPS (Nombre y Sanación)</label>
-                        <input type="text" id="logHpsNombre" placeholder="Ej. TuSanador">
-                        <input type="text" id="logHpsM" placeholder="Ej. 980K" style="margin-top:5px;">
-                        <input type="number" id="logHpsParse" placeholder="Parse % (Ej. 92)" style="margin-top:5px;">
+                        <label>Top HPS (Opcional)</label>
+                        <input type="text" id="logHpsNombre" placeholder="Nombre del Sanador">
+                        <input type="text" id="logHpsM" placeholder="Sanación (ej: 980K)" style="margin-top:5px;">
+                        <input type="number" id="logHpsParse" placeholder="Parse % (ej: 92)" style="margin-top:5px;">
                     </div>
                 </div>
 
@@ -1578,7 +1571,6 @@
         </div>
     </div>
 
-    <!-- MODAL INTERACTIVO PARA COMUNICADOS -->
     <div id="modalComunicado" class="modal-overlay">
         <div class="modal-caja">
             <h3 id="modalTitulo">👑 Solicitud de Ingreso</h3>
