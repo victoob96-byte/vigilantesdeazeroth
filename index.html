@@ -4,103 +4,271 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Vigilantes de Azeroth - Hermandad WoW</title>
+    
+    <!-- Fuentes épicas de Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Cinzel+Decorative:wght@700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    
     <style>
         :root {
-            --bg-oscuro: #0f1115;
-            --bg-tarjeta: #1a1d24;
+            --bg-oscuro: #090c12;
+            --bg-capa: #121722;
+            --bg-tarjeta: #171d2b;
+            --bg-tarjeta-hover: #1f273a;
             --dorado-wow: #c19e45;
             --dorado-brillante: #f0cb6b;
+            --dorado-sombra: rgba(193, 158, 69, 0.3);
             --azul-alianza: #1d4ed8;
-            --texto-claro: #e2e8f0;
+            --azul-alianza-glow: rgba(29, 78, 216, 0.4);
+            --texto-claro: #f1f5f9;
             --texto-gris: #94a3b8;
-            /* Colores Oficiales de Clases de WoW */
+            --borde-dorado: rgba(193, 158, 69, 0.35);
+            
+            /* Colores de Clases Oficiales WoW */
             --color-guerrero: #c69b6d;
             --color-mago: #3fc7eb;
             --color-sacerdote: #ffffff;
             --color-druida: #ff7c0a;
+            --color-paladin: #f48cba;
+            --color-picaros: #fff468;
+            --color-cazador: #aad372;
+            --color-brujo: #8788ee;
+            --color-caballeromuerte: #c41e3a;
+            --color-chaman: #0070dd;
+            --color-monje: #00ff98;
+            --color-evocador: #33937f;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
         }
 
         body {
             font-family: 'Cinzel', 'Georgia', serif;
             background-color: var(--bg-oscuro);
             color: var(--texto-claro);
-            margin: 0;
-            padding: 0;
-            background-image: radial-gradient(circle at top, #151e36 0%, var(--bg-oscuro) 75%);
+            min-height: 100vh;
+            background-image: 
+                radial-gradient(circle at 50% 0%, #1e293b 0%, transparent 60%),
+                radial-gradient(circle at 20% 35%, rgba(29, 78, 216, 0.12) 0%, transparent 40%),
+                radial-gradient(circle at 80% 65%, rgba(193, 158, 69, 0.12) 0%, transparent 40%);
+            background-attachment: fixed;
+            line-height: 1.6;
         }
 
         header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 35px;
+            padding: 35px 25px 25px 25px;
+            position: relative;
+            background: linear-gradient(180deg, rgba(9, 12, 18, 0.92) 0%, rgba(18, 23, 34, 0.98) 100%);
+            border-bottom: 2px solid var(--dorado-wow);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.85);
+            flex-wrap: wrap;
+        }
+
+        .header-izquierda {
+            flex: 0 0 auto;
             text-align: center;
-            padding: 40px 20px 20px 20px;
+            position: relative;
+        }
+
+        .header-derecha {
+            flex: 1 1 500px;
+            text-align: left;
+        }
+
+        .header-emblem {
+            font-size: 2.8rem;
+            margin-bottom: 5px;
+            filter: drop-shadow(0 0 15px rgba(240, 203, 107, 0.5));
+            animation: pulseGlow 3s infinite alternate ease-in-out;
+            display: inline-block;
+        }
+
+        @keyframes pulseGlow {
+            0% { filter: drop-shadow(0 0 8px rgba(193, 158, 69, 0.4)); transform: scale(1); }
+            100% { filter: drop-shadow(0 0 22px rgba(240, 203, 107, 0.8)); transform: scale(1.03); }
         }
 
         h1 {
-            font-size: 3rem;
-            color: var(--dorado-wow);
-            margin: 0;
+            font-family: 'Cinzel Decorative', 'Cinzel', serif;
+            font-size: clamp(2rem, 4vw, 3.4rem);
+            color: var(--dorado-brillante);
             text-transform: uppercase;
-            letter-spacing: 3px;
-            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.7);
+            letter-spacing: 2px;
+            text-shadow: 0 4px 12px rgba(0, 0, 0, 0.9), 0 0 20px rgba(193, 158, 69, 0.4);
+            margin: 0;
+            line-height: 1.15;
         }
 
         .lema {
             font-style: italic;
-            color: var(--texto-gris);
-            font-size: 1.2rem;
-            margin-top: 10px;
-            margin-bottom: 20px;
+            color: #cbd5e1;
+            font-size: clamp(0.9rem, 1.8vw, 1.15rem);
+            margin-top: 8px;
+            margin-bottom: 15px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
         }
+
+        .marco-dorado-wrapper {
+            position: relative;
+            display: inline-block;
+            padding: 6px;
+            background: linear-gradient(135deg, #10141e 0%, #2a2210 50%, #10141e 100%);
+            border-radius: 12px;
+            border: 2px solid var(--dorado-wow);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8), 0 0 25px rgba(193, 158, 69, 0.25);
+        }
+
+        .marco-dorado-wrapper::before, .marco-dorado-wrapper::after {
+            content: '◆';
+            position: absolute;
+            color: var(--dorado-brillante);
+            font-size: 1rem;
+            text-shadow: 0 0 8px var(--dorado-brillante);
+        }
+        .marco-dorado-wrapper::before { top: -6px; left: 8px; }
+        .marco-dorado-wrapper::after { bottom: -6px; right: 8px; }
 
         .imagen-logo {
-            max-width: 100%;
-            width: 400px;
-            border-radius: 12px;
-            margin-top: 10px;
-            border: 2px solid var(--dorado-wow);
-            box-shadow: 0 4px 20px rgba(0,0,0,0.6);
+            display: block;
+            width: 240px;
+            height: 180px;
+            object-fit: cover;
+            border-radius: 8px;
+            border: 1px solid rgba(193, 158, 69, 0.4);
+            transition: transform 0.4s ease, filter 0.4s ease;
         }
 
-        /* MENÚ SUPERIOR DE PESTAÑAS INTERACTIVAS */
+        .imagen-logo:hover {
+            transform: scale(1.02);
+            filter: brightness(1.08);
+        }
+
+        .btn-cambiar-imagen {
+            display: inline-block;
+            margin-top: 8px;
+            font-size: 0.75rem;
+            color: var(--texto-gris);
+            background: rgba(18, 23, 34, 0.8);
+            border: 1px dashed var(--borde-dorado);
+            padding: 4px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-cambiar-imagen:hover {
+            color: var(--dorado-brillante);
+            border-color: var(--dorado-brillante);
+        }
+
+        .metricas-header {
+            display: flex;
+            gap: 12px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .header-stat-box {
+            background: rgba(16, 20, 30, 0.8);
+            border: 1px solid rgba(193, 158, 69, 0.3);
+            border-radius: 6px;
+            padding: 6px 14px;
+            font-size: 0.82rem;
+            color: var(--texto-gris);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .header-stat-box span {
+            color: var(--dorado-brillante);
+            font-weight: 700;
+        }
+
         nav {
             display: flex;
             justify-content: center;
-            background-color: #11141a;
-            border-top: 1px solid rgba(193, 158, 69, 0.2);
+            background-color: #0b0e14;
+            border-top: 1px solid rgba(193, 158, 69, 0.3);
             border-bottom: 2px solid var(--dorado-wow);
             position: sticky;
             top: 0;
-            z-index: 100;
+            z-index: 1000;
             flex-wrap: wrap;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            padding: 0 10px;
         }
 
-        nav button {
+        nav button.tab-btn {
             background: none;
             border: none;
             color: var(--texto-gris);
-            padding: 15px 20px;
-            font-size: 0.95rem;
-            font-family: 'Cinzel', sans-serif;
+            padding: 16px 20px;
+            font-size: 0.92rem;
+            font-family: 'Cinzel', serif;
+            font-weight: 700;
             cursor: pointer;
-            transition: 0.3s;
+            transition: all 0.3s ease;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 1.2px;
+            position: relative;
+            outline: none;
         }
 
-        nav button:hover {
+        nav button.tab-btn:hover {
             color: var(--dorado-brillante);
-            background-color: rgba(255,255,255,0.02);
+            background-color: rgba(193, 158, 69, 0.08);
+            text-shadow: 0 0 10px rgba(240, 203, 107, 0.5);
         }
 
-        nav button.active {
+        nav button.tab-btn.active {
             color: var(--dorado-brillante);
-            border-bottom: 3px solid var(--dorado-brillante);
-            background-color: rgba(193, 158, 69, 0.05);
-            font-weight: bold;
+            background-color: rgba(193, 158, 69, 0.12);
+            text-shadow: 0 0 12px rgba(240, 203, 107, 0.7);
         }
 
-        /* CONTENEDORES DE SECCIÓN */
+        nav button.tab-btn.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--dorado-brillante), transparent);
+            box-shadow: 0 0 10px var(--dorado-brillante);
+        }
+
+        .btn-subir-log-nav {
+            background: linear-gradient(135deg, #1d4ed8 0%, #2563eb 100%) !important;
+            color: #ffffff !important;
+            margin-left: 10px;
+            border-radius: 4px;
+            border: 1px solid #60a5fa !important;
+            padding: 10px 18px !important;
+            align-self: center;
+            box-shadow: 0 0 10px rgba(29, 78, 216, 0.4);
+            display: none; /* Controlado por permisos */
+        }
+        .btn-subir-log-nav:hover {
+            background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%) !important;
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.6) !important;
+        }
+
         .seccion-contenido {
             display: none;
+            animation: fadeIn 0.4s ease-in-out forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .seccion-contenido.active {
@@ -108,138 +276,832 @@
         }
 
         .contenedor {
-            max-width: 1100px;
-            margin: 30px auto;
+            max-width: 1200px;
+            margin: 35px auto;
             padding: 0 20px;
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 28px;
         }
 
         .tarjeta {
             background-color: var(--bg-tarjeta);
-            border: 1px solid #2e3440;
-            border-radius: 8px;
-            padding: 25px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
-            transition: transform 0.3s, border-color 0.3s;
+            border: 1px solid var(--borde-dorado);
+            border-radius: 10px;
+            padding: 28px;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.6);
+            transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .tarjeta::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--dorado-wow), transparent);
+            opacity: 0.5;
         }
 
         .tarjeta:hover {
             transform: translateY(-5px);
-            border-color: var(--dorado-wow);
+            border-color: var(--dorado-brillante);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.8), 0 0 18px rgba(193, 158, 69, 0.2);
         }
 
         .tarjeta h2 {
             color: var(--dorado-brillante);
-            font-size: 1.5rem;
+            font-size: 1.45rem;
             margin-top: 0;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-            padding-bottom: 10px;
+            margin-bottom: 18px;
+            border-bottom: 1px solid rgba(193, 158, 69, 0.25);
+            padding-bottom: 12px;
+            text-shadow: 0 2px 6px rgba(0,0,0,0.8);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
-        .tarjeta p, .tarjeta ul {
+        .tarjeta p {
             color: var(--texto-gris);
-            line-height: 1.6;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.95rem;
+            line-height: 1.7;
         }
 
-        .tarjeta ul {
-            padding-left: 20px;
-        }
-
-        /* Estilos del Consejo */
-        .consejo-grid {
+        .grid-computo-global {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        .caja-stat-global {
+            background: rgba(10, 13, 20, 0.7);
+            border: 1px solid rgba(193, 158, 69, 0.25);
+            border-radius: 8px;
+            padding: 16px;
+            text-align: center;
+        }
+        .caja-stat-global .numero {
+            font-size: 1.8rem;
+            font-weight: 900;
+            color: var(--dorado-brillante);
+            font-family: 'Cinzel', serif;
+        }
+        .caja-stat-global .etiqueta {
+            font-size: 0.8rem;
+            color: var(--texto-gris);
+            text-transform: uppercase;
+            font-family: 'Inter', sans-serif;
+            margin-top: 4px;
+        }
+
+        .consejo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 20px;
-            margin-top: 25px;
+            margin-top: 20px;
         }
 
         .miembro {
-            background: #12151c;
-            border: 1px solid rgba(193, 158, 69, 0.1);
-            padding: 15px;
-            border-radius: 6px;
+            background: #10141f;
+            border: 1px solid rgba(193, 158, 69, 0.25);
+            padding: 22px 16px;
+            border-radius: 8px;
             text-align: center;
-        }
-
-        .miembro .icono { font-size: 2rem; margin-bottom: 10px; }
-        .miembro strong { display: block; color: var(--texto-claro); font-size: 1.1rem; }
-        .miembro .rango { color: var(--dorado-wow); font-size: 0.85rem; font-weight: bold; text-transform: uppercase; margin: 4px 0 10px 0; }
-        .miembro .lore-corto { font-size: 0.8rem; color: var(--texto-gris); line-height: 1.4; }
-
-        /* Estilos de Barras de Rendimiento / Progresión */
-        .contenedor-barras {
-            margin-top: 15px;
-        }
-        .barra-progreso {
-            background-color: #12151c;
-            border-radius: 4px;
-            margin-bottom: 12px;
-            overflow: hidden;
-            border: 1px solid rgba(255,255,255,0.05);
-        }
-        .barra-llena {
-            padding: 10px 12px;
-            font-size: 0.85rem;
-            font-weight: bold;
-            color: #000;
+            transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
             display: flex;
+            flex-direction: column;
             justify-content: space-between;
         }
 
-        /* Estilos de Tablas */
+        .miembro:hover {
+            transform: translateY(-4px);
+            border-color: var(--dorado-brillante);
+            box-shadow: 0 8px 22px rgba(0,0,0,0.8), 0 0 15px rgba(193, 158, 69, 0.22);
+        }
+
+        .miembro .icono {
+            font-size: 2.3rem;
+            margin-bottom: 8px;
+            filter: drop-shadow(0 2px 5px rgba(0,0,0,0.8));
+        }
+
+        .miembro strong {
+            display: block;
+            font-size: 1.15rem;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+
+        .miembro .rango {
+            color: var(--dorado-wow);
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+            background: rgba(193, 158, 69, 0.12);
+            padding: 3px 8px;
+            border-radius: 12px;
+            display: inline-block;
+        }
+
+        .miembro .lore-corto {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.84rem;
+            color: #cbd5e1;
+            line-height: 1.5;
+        }
+
+        .contenedor-barras {
+            margin-top: 15px;
+        }
+
+        .etiqueta-barra {
+            display: flex;
+            justify-content: space-between;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+            color: #e2e8f0;
+            margin-bottom: 6px;
+            font-weight: 600;
+        }
+
+        .barra-progreso {
+            background-color: #0d1017;
+            border-radius: 6px;
+            margin-bottom: 18px;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.08);
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.8);
+            height: 28px;
+            position: relative;
+        }
+
+        .barra-llena {
+            height: 100%;
+            padding: 0 12px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: #000;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: width 1s ease-in-out;
+            box-shadow: 0 0 10px rgba(0,0,0,0.5);
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .badge-derrotado {
+            background-color: rgba(34, 197, 94, 0.15);
+            color: #4ade80;
+            border: 1px solid rgba(34, 197, 94, 0.4);
+            box-shadow: 0 0 10px rgba(34, 197, 94, 0.2);
+        }
+
+        .badge-vivo {
+            background-color: rgba(239, 68, 68, 0.15);
+            color: #f87171;
+            border: 1px solid rgba(239, 68, 68, 0.4);
+            box-shadow: 0 0 10px rgba(239, 68, 68, 0.2);
+        }
+
+        .btn-log {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .btn-log.active {
+            background: rgba(37, 99, 235, 0.2);
+            color: #60a5fa;
+            border: 1px solid rgba(37, 99, 235, 0.5);
+            cursor: pointer;
+        }
+
+        .btn-log.active:hover {
+            background: rgba(37, 99, 235, 0.4);
+            color: #ffffff;
+            box-shadow: 0 0 10px rgba(37, 99, 235, 0.5);
+        }
+
+        .tabla-contenedor {
+            overflow-x: auto;
+            margin-top: 15px;
+            border-radius: 6px;
+            border: 1px solid rgba(193, 158, 69, 0.2);
+        }
+
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 15px;
+            font-family: 'Inter', sans-serif;
             font-size: 0.9rem;
+            background-color: #0f121a;
         }
+
         th, td {
-            padding: 12px;
+            padding: 14px 16px;
             text-align: left;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
+            border-bottom: 1px solid rgba(255,255,255,0.06);
         }
+
         th {
-            color: var(--dorado-wow);
+            background-color: #161b26;
+            color: var(--dorado-brillante);
+            font-family: 'Cinzel', serif;
+            font-weight: 700;
             border-bottom: 2px solid var(--dorado-wow);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-size: 0.85rem;
         }
+
         tr:hover {
-            background-color: rgba(255,255,255,0.02);
+            background-color: rgba(193, 158, 69, 0.05);
         }
 
         .btn-unirse {
-            display: block;
-            width: 200px;
-            margin: 40px auto;
-            background: linear-gradient(135deg, #8a6d29, var(--dorado-wow));
-            color: #000;
-            font-weight: bold;
+            display: inline-block;
+            margin: 35px auto 15px auto;
+            padding: 16px 42px;
+            background: linear-gradient(135deg, #a17c2f 0%, var(--dorado-wow) 50%, var(--dorado-brillante) 100%);
+            color: #090c12;
+            font-family: 'Cinzel Decorative', 'Cinzel', serif;
+            font-weight: 900;
+            font-size: 1.1rem;
             text-align: center;
-            padding: 12px;
             text-decoration: none;
-            border-radius: 4px;
+            border-radius: 6px;
             text-transform: uppercase;
-            letter-spacing: 1px;
-            box-shadow: 0 4px 15px rgba(193, 158, 69, 0.3);
-            transition: 0.3s;
+            letter-spacing: 2px;
+            box-shadow: 0 6px 20px rgba(193, 158, 69, 0.4), 0 0 15px rgba(0,0,0,0.8);
+            transition: all 0.3s ease;
+            border: 1px solid #ffe89e;
+            cursor: pointer;
         }
 
         .btn-unirse:hover {
+            transform: translateY(-3px) scale(1.03);
+            background: linear-gradient(135deg, var(--dorado-wow) 0%, var(--dorado-brillante) 100%);
+            box-shadow: 0 8px 30px rgba(240, 203, 107, 0.6), 0 0 20px rgba(193, 158, 69, 0.4);
+            color: #000;
+        }
+
+        .wrapper-btn {
+            text-align: center;
+            padding: 10px 0 30px 0;
+        }
+
+        footer {
+            text-align: center;
+            padding: 28px 20px;
+            background-color: #06080d;
+            border-top: 1px solid rgba(193, 158, 69, 0.2);
+            color: var(--texto-gris);
+            font-size: 0.85rem;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .form-grupo {
+            margin-bottom: 15px;
+            text-align: left;
+        }
+        .form-grupo label {
+            display: block;
+            font-size: 0.85rem;
+            color: var(--dorado-brillante);
+            margin-bottom: 5px;
+            font-family: 'Inter', sans-serif;
+        }
+        .form-grupo input, .form-grupo select, .form-grupo textarea {
+            width: 100%;
+            padding: 10px;
+            background: #0d1017;
+            border: 1px solid var(--borde-dorado);
+            border-radius: 6px;
+            color: #fff;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+        }
+        .form-grupo input:focus, .form-grupo select:focus, .form-grupo textarea:focus {
+            outline: none;
+            border-color: var(--dorado-brillante);
+            box-shadow: 0 0 10px rgba(240, 203, 107, 0.3);
+        }
+
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.88);
+            backdrop-filter: blur(6px);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-caja {
+            background: #151a26;
+            border: 2px solid var(--dorado-brillante);
+            border-radius: 10px;
+            padding: 30px;
+            max-width: 580px;
+            width: 100%;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.9), 0 0 25px rgba(240, 203, 107, 0.3);
+            text-align: center;
+            position: relative;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-caja h3 {
+            color: var(--dorado-brillante);
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+        }
+
+        .modal-caja p {
+            color: #cbd5e1;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .btn-cerrar-modal {
             background: linear-gradient(135deg, var(--dorado-wow), var(--dorado-brillante));
-            box-shadow: 0 4px 20px rgba(193, 158, 69, 0.5);
+            color: #000;
+            font-weight: 700;
+            font-family: 'Cinzel', serif;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 4px;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+            margin: 5px;
+        }
+
+        .btn-cerrar-modal:hover {
+            filter: brightness(1.15);
+            box-shadow: 0 0 15px rgba(240, 203, 107, 0.5);
+        }
+
+        .btn-secundario-modal {
+            background: rgba(255, 255, 255, 0.1);
+            color: #cbd5e1;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            font-weight: 600;
+            font-family: 'Inter', sans-serif;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .btn-secundario-modal:hover {
+            background: rgba(255, 255, 255, 0.2);
+            color: #fff;
         }
     </style>
+
+    <script>
+        // Clave secreta por defecto para oficiales (se puede personalizar)
+        const CLAVE_OFICIAL_SECRETA = "1234";
+
+        // Estado inicial de logs
+        let logsHermandad = [
+            {
+                id: 'log-001',
+                fecha: '2026-09-20',
+                jefe: 'Primer Guardián del Bastión',
+                dificultad: 'Heroica',
+                resultado: 'Derrotado',
+                duracion: '04:22',
+                dpsTop: { jugador: 'Viktor', clase: 'Mago Arcano', dps: '1.42M', parse: 96, color: '#3fc7eb' },
+                hpsTop: { jugador: 'Pescadito', clase: 'Sacerdote Sagrado', hps: '980K', parse: 94, color: '#ffffff' },
+                asistencia: 20
+            },
+            {
+                id: 'log-002',
+                fecha: '2026-09-27',
+                jefe: 'El General Forjado por el Vacío',
+                dificultad: 'Heroica',
+                resultado: 'Wipe (12%)',
+                duracion: '06:15',
+                dpsTop: { jugador: 'Juarezote', clase: 'Guerrero Furia', dps: '1.35M', parse: 89, color: '#c69b6d' },
+                hpsTop: { jugador: 'Adenabor', clase: 'Druida Restauración', hps: '890K', parse: 87, color: '#ff7c0a' },
+                asistencia: 19
+            }
+        ];
+
+        // Cargar logs guardados en el navegador local
+        function cargarLogsStorage() {
+            const guardados = localStorage.getItem('vigilantes_logs');
+            if (guardados) {
+                try {
+                    logsHermandad = JSON.parse(guardados);
+                } catch (e) {
+                    console.error("Error al cargar los logs guardados", e);
+                }
+            }
+        }
+
+        // Guardar logs localmente
+        function guardarLogsStorage() {
+            localStorage.setItem('vigilantes_logs', JSON.stringify(logsHermandad));
+        }
+
+        // Estado de permisos del usuario actual
+        let esOficial = localStorage.getItem('vigilantes_es_oficial') === 'true';
+
+        // Alternar visibilidad de botones exclusivos de Oficiales
+        function actualizarVisibilidadPermisos() {
+            const botonesNav = document.querySelectorAll('.btn-subir-log-nav, .btn-subir-log');
+            botonesNav.forEach(btn => {
+                btn.style.display = esOficial ? 'inline-block' : 'none';
+            });
+
+            const badgeContenedor = document.getElementById('badge-modo-acceso');
+            if (badgeContenedor) {
+                if (esOficial) {
+                    badgeContenedor.innerHTML = `
+                        <div class="header-stat-box" style="border-color: rgba(34, 197, 94, 0.5);">
+                            <span style="color:#4ade80;">🔑 Modo Oficial</span>
+                            <button onclick="cerrarModoOficial()" style="font-size:0.75rem; background:rgba(239, 68, 68, 0.2); color:#f87171; border:1px solid rgba(239, 68, 68, 0.4); padding:2px 8px; border-radius:4px; cursor:pointer; font-family:'Inter',sans-serif;">Salir</button>
+                        </div>
+                    `;
+                } else {
+                    badgeContenedor.innerHTML = `
+                        <button onclick="abrirModalLoginOficial()" style="font-size:0.8rem; background:rgba(193, 158, 69, 0.15); color:var(--dorado-brillante); border:1px solid var(--borde-dorado); padding:6px 12px; border-radius:6px; cursor:pointer; font-family:'Cinzel',serif; font-weight:700;">
+                            🔑 Acceso Oficiales
+                        </button>
+                    `;
+                }
+            }
+        }
+
+        function abrirModalLoginOficial() {
+            document.getElementById('modalLoginOficial').classList.add('active');
+            document.getElementById('inputClaveOficial').value = '';
+            document.getElementById('errorClave').style.display = 'none';
+        }
+
+        function cerrarModalLoginOficial() {
+            document.getElementById('modalLoginOficial').classList.remove('active');
+        }
+
+        function verificarClaveOficial(e) {
+            e.preventDefault();
+            const claveIngresada = document.getElementById('inputClaveOficial').value;
+            if (claveIngresada === CLAVE_OFICIAL_SECRETA) {
+                esOficial = true;
+                localStorage.setItem('vigilantes_es_oficial', 'true');
+                actualizarVisibilidadPermisos();
+                cerrarModalLoginOficial();
+                mostrarNotificacionModal("👑 Modo Oficial Activado", "Bienvenido, Oficial de Azeroth. Ahora tienes permiso para registrar y gestionar los Warcraft Logs de la hermandad.");
+            } else {
+                document.getElementById('errorClave').style.display = 'block';
+            }
+        }
+
+        function cerrarModoOficial() {
+            esOficial = false;
+            localStorage.setItem('vigilantes_es_oficial', 'false');
+            actualizarVisibilidadPermisos();
+            mostrarNotificacionModal("🛡️ Modo Visitante Activado", "Has cerrado la sesión de oficial. La interfaz ahora se muestra en modo solo lectura.");
+        }
+
+        function recalcularComputoGlobal() {
+            const totalLogs = logsHermandad.length;
+            const victoriaBosses = logsHermandad.filter(l => l.resultado === 'Derrotado').length;
+            const tasaVictoria = totalLogs > 0 ? Math.round((victoriaBosses / totalLogs) * 100) : 0;
+
+            const elTotalLogs = document.getElementById('stat-total-logs');
+            if (elTotalLogs) elTotalLogs.innerText = totalLogs;
+
+            const elKills = document.getElementById('stat-kills');
+            if (elKills) elKills.innerText = victoriaBosses;
+
+            const elTasa = document.getElementById('stat-tasa');
+            if (elTasa) elTasa.innerText = tasaVictoria + '%';
+
+            const elHeaderLogs = document.getElementById('header-logs-count');
+            if (elHeaderLogs) elHeaderLogs.innerText = totalLogs;
+
+            renderizarTablaProgresion();
+            renderizarTablaHistorial();
+            renderizarMuroDeLaFama();
+        }
+
+        function renderizarTablaProgresion() {
+            const tbody = document.getElementById('tabla-progresion-body');
+            if (!tbody) return;
+
+            if (logsHermandad.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#94a3b8;">No hay logs registrados aún.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = logsHermandad.map(log => {
+                const esKill = log.resultado === 'Derrotado';
+                const badgeClass = esKill ? 'badge-derrotado' : 'badge-vivo';
+                const badgeIcon = esKill ? '🏆 DERROTADO' : '❌ ' + log.resultado;
+                return `
+                    <tr>
+                        <td><strong>${log.jefe}</strong> <br><small style="color:#64748b;">${log.fecha} (${log.duracion})</small></td>
+                        <td>${log.dificultad}</td>
+                        <td><span class="badge ${badgeClass}">${badgeIcon}</span></td>
+                        <td>
+                            <button class="btn-log active" onclick="mostrarModalDetalleLog('${log.id}')">
+                                📊 [Ver Parse Global]
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function renderizarTablaHistorial() {
+            const tbody = document.getElementById('tabla-historial-body');
+            if (!tbody) return;
+
+            tbody.innerHTML = logsHermandad.map(log => `
+                <tr>
+                    <td><strong>${log.fecha}</strong></td>
+                    <td>${log.jefe} (${log.dificultad})</td>
+                    <td>${log.resultado}</td>
+                    <td style="color:${log.dpsTop.color}; font-weight:bold;">${log.dpsTop.jugador} (${log.dpsTop.dps})</td>
+                    <td style="color:${log.hpsTop.color}; font-weight:bold;">${log.hpsTop.jugador} (${log.hpsTop.hps})</td>
+                </tr>
+            `).join('');
+        }
+
+        function renderizarMuroDeLaFama() {
+            const contDPS = document.getElementById('muro-dps-container');
+            const contHPS = document.getElementById('muro-hps-container');
+
+            if (contDPS && logsHermandad.length > 0) {
+                const copiaDps = [...logsHermandad].sort((a, b) => b.dpsTop.parse - a.dpsTop.parse);
+                contDPS.innerHTML = copiaDps.slice(0, 3).map(l => `
+                    <div class="etiqueta-barra">
+                        <span style="color: ${l.dpsTop.color};">${l.dpsTop.jugador} (${l.dpsTop.clase})</span>
+                        <span>${l.dpsTop.parse}% Parse (${l.dpsTop.dps})</span>
+                    </div>
+                    <div class="barra-progreso">
+                        <div class="barra-llena" style="width: ${l.dpsTop.parse}%; background-color: ${l.dpsTop.color};">
+                            <span>${l.jefe}</span>
+                            <span>${l.dpsTop.parse}%</span>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            if (contHPS && logsHermandad.length > 0) {
+                const copiaHps = [...logsHermandad].sort((a, b) => b.hpsTop.parse - a.hpsTop.parse);
+                contHPS.innerHTML = copiaHps.slice(0, 3).map(l => `
+                    <div class="etiqueta-barra">
+                        <span style="color: ${l.hpsTop.color};">${l.hpsTop.jugador} (${l.hpsTop.clase})</span>
+                        <span>${l.hpsTop.parse}% Parse (${l.hpsTop.hps})</span>
+                    </div>
+                    <div class="barra-progreso">
+                        <div class="barra-llena" style="width: ${l.hpsTop.parse}%; background-color: ${l.hpsTop.color};">
+                            <span>${l.jefe}</span>
+                            <span>${l.hpsTop.parse}%</span>
+                        </div>
+                    </div>
+                `).join('');
+            }
+        }
+
+        function cambiarImagenPerfil(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('guild-banner-img').src = e.target.result;
+                    localStorage.setItem('vigilantes_banner_custom', e.target.result);
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function cambiarImagenUrl() {
+            const url = prompt("Introduce la URL de tu imagen en GitHub (ejemplo: https://raw.githubusercontent.com/usuario/repo/main/perfil.jpeg):");
+            if (url && url.trim() !== '') {
+                const img = document.getElementById('guild-banner-img');
+                img.src = url.trim();
+                localStorage.setItem('vigilantes_banner_custom', url.trim());
+            }
+        }
+
+        function activarEstandarteFallback(imgElement) {
+            const svgFallback = `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="240" height="180" viewBox="0 0 240 180"><rect width="100%" height="100%" fill="%23121724"/><radialGradient id="g" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="%231d4ed8" stop-opacity="0.6"/><stop offset="100%" stop-color="%230b0e14" stop-opacity="0.95"/></radialGradient><rect width="100%" height="100%" fill="url(%23g)"/><rect x="8" y="8" width="224" height="164" fill="none" stroke="%23c19e45" stroke-width="2" rx="6"/><path d="M120 35 L145 75 L120 115 L95 75 Z" fill="none" stroke="%23f0cb6b" stroke-width="3"/><circle cx="120" cy="75" r="12" fill="%23c19e45"/><text x="50%" y="142" text-anchor="middle" fill="%23f0cb6b" font-family="Georgia, serif" font-size="13" font-weight="bold" letter-spacing="1">VIGILANTES</text><text x="50%" y="158" text-anchor="middle" fill="%2394a3b8" font-family="sans-serif" font-size="10">ALIANZA - AZEROTH</text></svg>`;
+            imgElement.src = svgFallback;
+        }
+
+        function abrirPestana(evt, nombrePestana) {
+            var contenidos = document.getElementsByClassName("seccion-contenido");
+            for (var i = 0; i < contenidos.length; i++) {
+                contenidos[i].className = contenidos[i].className.replace(" active", "");
+            }
+            var botones = document.getElementsByClassName("tab-btn");
+            for (var i = 0; i < botones.length; i++) {
+                botones[i].className = botones[i].className.replace(" active", "");
+            }
+            document.getElementById(nombrePestana).className += " active";
+            if (evt) evt.currentTarget.className += " active";
+        }
+
+        function mostrarModalSubirLog() {
+            if (!esOficial) {
+                abrirModalLoginOficial();
+                return;
+            }
+            document.getElementById('modalSubirLog').classList.add('active');
+        }
+
+        function cerrarModalSubirLog() {
+            document.getElementById('modalSubirLog').classList.remove('active');
+        }
+
+        function guardarLogFormulario(e) {
+            e.preventDefault();
+            const jefe = document.getElementById('logJefe').value;
+            const dificultad = document.getElementById('logDificultad').value;
+            const resultado = document.getElementById('logResultado').value;
+            const fecha = document.getElementById('logFecha').value || new Date().toISOString().split('T')[0];
+            const dpsNombre = document.getElementById('logDpsNombre').value || 'Jugador DPS';
+            const dpsM = document.getElementById('logDpsM').value || '1.20M';
+            const dpsParse = parseInt(document.getElementById('logDpsParse').value) || 85;
+            const hpsNombre = document.getElementById('logHpsNombre').value || 'Jugador Sanador';
+            const hpsM = document.getElementById('logHpsM').value || '850K';
+            const hpsParse = parseInt(document.getElementById('logHpsParse').value) || 85;
+
+            const nuevoLog = {
+                id: 'log-' + Date.now(),
+                fecha: fecha,
+                jefe: jefe,
+                dificultad: dificultad,
+                resultado: resultado,
+                duracion: '05:30',
+                dpsTop: { jugador: dpsNombre, clase: 'Guerrero / Mago', dps: dpsM, parse: dpsParse, color: '#f0cb6b' },
+                hpsTop: { jugador: hpsNombre, clase: 'Sacerdote / Druida', hps: hpsM, parse: hpsParse, color: '#3fc7eb' },
+                asistencia: 20
+            };
+
+            logsHermandad.unshift(nuevoLog);
+            guardarLogsStorage();
+            recalcularComputoGlobal();
+            cerrarModalSubirLog();
+            mostrarNotificacionModal("📊 Log Registrado", "El registro ha sido añadido con éxito y se ha guardado en la base de datos local.");
+        }
+
+        function simularLogAleatorio() {
+            const jefes = ['Reina Ansurek', 'Sikran', 'Rashanan', 'Ovinax el Abominable', 'Kyveza'];
+            const difs = ['Heroica', 'Mítica'];
+            const dpsJugadores = ['Viktor', 'Juarezote', 'Caly', 'Adenabor', 'Pescadito'];
+            
+            const j = jefes[Math.floor(Math.random() * jefes.length)];
+            const d = difs[Math.floor(Math.random() * difs.length)];
+            const jug = dpsJugadores[Math.floor(Math.random() * dpsJugadores.length)];
+            const p = Math.floor(Math.random() * 25) + 75;
+
+            const logSim = {
+                id: 'log-' + Date.now(),
+                fecha: new Date().toISOString().split('T')[0],
+                jefe: j,
+                dificultad: d,
+                resultado: 'Derrotado',
+                duracion: '04:' + Math.floor(Math.random() * 50 + 10),
+                dpsTop: { jugador: jug, clase: 'Mago / Guerrero', dps: (1.3 + Math.random() * 0.4).toFixed(2) + 'M', parse: p, color: '#3fc7eb' },
+                hpsTop: { jugador: 'Pescadito', clase: 'Sacerdote', hps: '990K', parse: 91, color: '#ffffff' },
+                asistencia: 20
+            };
+
+            logsHermandad.unshift(logSim);
+            guardarLogsStorage();
+            recalcularComputoGlobal();
+            cerrarModalSubirLog();
+            mostrarNotificacionModal("🎲 Log Simulado Registrado", "Se ha insertado un nuevo combate de prueba con éxito.");
+        }
+
+        function mostrarModalDetalleLog(id) {
+            const log = logsHermandad.find(l => l.id === id);
+            if (!log) return;
+
+            document.getElementById('modalTitulo').innerText = "📊 Warcraft Log: " + log.jefe;
+            document.getElementById('modalMensaje').innerHTML = `
+                <div style="text-align:left; background:#0d1017; padding:15px; border-radius:8px; border:1px solid rgba(193,158,69,0.3);">
+                    <p style="margin-bottom:8px;"><strong>🗓️ Fecha:</strong> ${log.fecha}</p>
+                    <p style="margin-bottom:8px;"><strong>⚔️ Encuentro:</strong> ${log.jefe} (${log.dificultad})</p>
+                    <p style="margin-bottom:8px;"><strong>🛡️ Resultado:</strong> ${log.resultado}</p>
+                    <p style="margin-bottom:8px;"><strong>💥 Top DPS:</strong> <span style="color:${log.dpsTop.color}">${log.dpsTop.jugador} (${log.dpsTop.dps}) - ${log.dpsTop.parse}% Parse</span></p>
+                    <p style="margin-bottom:8px;"><strong>💚 Top HPS:</strong> <span style="color:${log.hpsTop.color}">${log.hpsTop.jugador} (${log.hpsTop.hps}) - ${log.hpsTop.parse}% Parse</span></p>
+                </div>
+            `;
+            document.getElementById('modalComunicado').classList.add('active');
+        }
+
+        function mostrarModalReclutamiento() {
+            document.getElementById('modalTitulo').innerText = "👑 Unirse a las Filas";
+            document.getElementById('modalMensaje').innerHTML = "¡Por la Alianza! Ponte en contacto dentro del juego con cualquiera de los miembros del Alto Consejo:<br><br><strong style='color:#f0cb6b;'>Viktor, Pescadito, Juarezote, Caly o Adenabor</strong><br><br>o solicita la invitación directamente desde el buscador de hermandades.";
+            document.getElementById('modalComunicado').classList.add('active');
+        }
+
+        function mostrarNotificacionModal(titulo, mensaje) {
+            document.getElementById('modalTitulo').innerText = titulo;
+            document.getElementById('modalMensaje').innerHTML = mensaje;
+            document.getElementById('modalComunicado').classList.add('active');
+        }
+
+        function cerrarModal() {
+            document.getElementById('modalComunicado').classList.remove('active');
+        }
+
+        window.onload = function() {
+            cargarLogsStorage();
+            recalcularComputoGlobal();
+            actualizarVisibilidadPermisos();
+
+            // Cargar banner personalizado si se guardó previamente
+            const bannerGuardado = localStorage.setItem ? localStorage.getItem('vigilantes_banner_custom') : null;
+            if (bannerGuardado) {
+                document.getElementById('guild-banner-img').src = bannerGuardado;
+            }
+        };
+    </script>
 </head>
 <body>
 
     <header>
-        <h1>Vigilantes de Azeroth</h1>
-        <div class="lema">"Por la Alianza, custodiamos el frente desde las sombras hasta la eternidad"</div>
-        <img src="perfil.jpeg" alt="Vigilantes de Azeroth Banner" class="imagen-logo">
+        <!-- LADO IZQUIERDO: Imagen perfil.jpeg -->
+        <div class="header-izquierda">
+            <div class="marco-dorado-wrapper">
+                <img id="guild-banner-img" 
+                     src="perfil.jpeg" 
+                     alt="Vigilantes de Azeroth Banner" 
+                     class="imagen-logo" 
+                     onerror="activarEstandarteFallback(this)">
+            </div>
+            <div style="display:flex; gap:6px; justify-content:center; flex-wrap:wrap; margin-top:8px;">
+                <label class="btn-cambiar-imagen">
+                    📷 Archivo Local
+                    <input type="file" accept="image/*" style="display:none;" onchange="cambiarImagenPerfil(this)">
+                </label>
+                <button type="button" class="btn-cambiar-imagen" onclick="cambiarImagenUrl()">
+                    🔗 URL de GitHub
+                </button>
+            </div>
+        </div>
+
+        <!-- LADO DERECHO: Título, Lema y Métricas -->
+        <div class="header-derecha">
+            <div style="display:flex; align-items:center; gap:12px;">
+                <div class="header-emblem">🛡️</div>
+                <h1>Vigilantes de Azeroth</h1>
+            </div>
+            <div class="lema">"Por la Alianza, custodiamos el frente desde las sombras hasta la eternidad"</div>
+            
+            <div class="metricas-header">
+                <div class="header-stat-box">🌐 Servidor: <span>DUN MODR</span></div>
+                <div class="header-stat-box">🦁 Facción: <span>ALIANZA</span></div>
+                <div class="header-stat-box">📜 Warcraft Logs: <span id="header-logs-count">2</span></div>
+                <div id="badge-modo-acceso"></div>
+            </div>
+        </div>
     </header>
 
-    <!-- MENÚ SUPERIOR DE PESTAÑAS -->
     <nav>
         <button class="tab-btn active" onclick="abrirPestana(event, 'inicio')">Inicio</button>
         <button class="tab-btn" onclick="abrirPestana(event, 'resumen')">Resumen</button>
@@ -249,22 +1111,23 @@
         <button class="tab-btn" onclick="abrirPestana(event, 'control')">Control</button>
         <button class="tab-btn" onclick="abrirPestana(event, 'historial')">Historial</button>
         <button class="tab-btn" onclick="abrirPestana(event, 'loot')">Loot</button>
+        <button class="tab-btn btn-subir-log-nav" onclick="mostrarModalSubirLog()">➕ Subir Warcraft Log</button>
     </nav>
 
-    <!-- PESTAÑA: INICIO -->
+    <!-- 1. PESTAÑA: INICIO -->
     <div id="inicio" class="seccion-contenido active">
         <div class="contenedor">
             <div class="tarjeta" style="grid-column: 1 / -1;">
                 <h2>📜 Las Crónicas de la Orden</h2>
                 <p style="font-style: italic; line-height: 1.8;">
-                    Tras la caída del Rey Exánime y las constantes fracturas que han azotado a los Reinos del Este, un edicto secreto fue firmado en los salones del Torreón de Ventormenta. La Alianza necesitaba ojos donde la luz de los paladines no llegaba, y espadas firmes donde los ejércitos oficiales no podían marchar. Así nacieron los <strong>Vigilantes de Azeroth</strong>. 
+                    Tras la caída del Rey Exánime y las constantes fracturas que han azotado a los Reinos del Este, un edicto secreto fue firmado en los salones del Torreón de Ventormenta. La Alianza necesitaba ojos donde la luz de los paladines no llegaba, y espadas firmes donde los ejércitos oficiales no podían marchar. Así nacieron los <strong>Vigilantes de Azeroth</strong>.
                     <br><br>
                     Jurando lealtad eterna al León de la Alianza, esta orden se asentó en las fronteras del mundo conocido. No visten armaduras relucientes para los desfiles en el Barrio de los Enanos; vigilan las grietas de la Realidad y los frentes más hostiles, conteniendo los susurros del Vacío, las amenazas de la Horda y los vestigios de antiguos males. Cuando las trompetas de guerra suenan, los Vigilantes ya llevan ventaja en el campo de batalla.
                 </p>
             </div>
 
             <div class="tarjeta">
-                <h2>🛡️ Sobre la Hermandad</h2>
+                <h2>🛡️️ Sobre la Hermandad</h2>
                 <p>Somos una orden de la Alianza dedicada a defender el reino de cualquier amenaza. Reunimos a los combatientes más tenaces comprometidos con el compañerismo y la superación en cada mazmorra y banda.</p>
             </div>
 
@@ -275,248 +1138,328 @@
 
             <div class="tarjeta">
                 <h2>📜 Código de Honor</h2>
-                <ul>
-                    <li>Lealtad absoluta a la hermandad y sus aliados.</li>
-                    <li>Puntualidad y preparación previa a cada raid.</li>
-                    <li>Respeto mutuo y canalización constructiva de críticas.</li>
-                    <li>Apoyo constante a los integrantes en sus objetivos de equipamiento.</li>
-                </ul>
+                <p style="color: #cbd5e1; font-weight: 500; font-size: 0.98rem; font-style: italic; line-height: 1.8; border-left: 3px solid var(--dorado-wow); padding-left: 15px;">
+                    Lealtad a la Alianza, respeto mutuo y perseverancia. Dejamos a un lado el ego individual para priorizar el éxito del grupo. Cada miembro cuenta, cada derrota nos hace más fuertes.
+                </p>
             </div>
 
-            <!-- Consejo de la Hermandad -->
+            <!-- 👑 EL ALTO CONSEJO (5 FUNDADORES) -->
             <div class="tarjeta" style="grid-column: 1 / -1;">
-                <h2>👑 El Consejo del Mando</h2>
+                <h2>👑 El Alto Consejo (5 Fundadores)</h2>
                 <div class="consejo-grid">
                     <div class="miembro">
+                        <div class="icono">👑</div>
+                        <strong style="color: var(--dorado-brillante);">Viktor</strong>
+                        <div class="rango">Guild Master</div>
+                        <div class="lore-corto">El estratega principal. Encargado de coordinar las campañas militares de la orden y guiar las espadas de la Alianza hacia la victoria.</div>
+                    </div>
+                    
+                    <div class="miembro">
+                        <div class="icono">🔱</div>
+                        <strong style="color: var(--color-mago);">Pescadito</strong>
+                        <div class="rango">Guild Master</div>
+                        <div class="lore-corto">El pilar místico. Capaz de mantener la calma en los peores wipes y reconducir las fuerzas del grupo cuando todo parece perdido.</div>
+                    </div>
+
+                    <div class="miembro">
                         <div class="icono">🛡️</div>
-                        <strong style="color: var(--color-guerrero);">Comandante</strong>
-                        <div class="rango">Líder de Hermandad</div>
-                        <div class="lore-corto">Guía táctico e inquebrantable en el frente.</div>
+                        <strong style="color: var(--color-guerrero);">Juarezote</strong>
+                        <div class="rango">Guild Master</div>
+                        <div class="lore-corto">La vanguardia inquebrantable. Un líder imponente cuya sola presencia en primera línea inspira a los soldados a resistir hasta el final.</div>
                     </div>
+
                     <div class="miembro">
-                        <div class="icono">🔮</div>
-                        <strong style="color: var(--color-mago);">Archimago</strong>
-                        <div class="rango">Oficial de Banda</div>
-                        <div class="lore-corto">Estratega arcano y coordinador de raid.</div>
+                        <div class="icono">🪙</div>
+                        <strong style="color: #facc15;">Caly</strong>
+                        <div class="rango">Oficial / Cambios</div>
+                        <div class="lore-corto">Maneja las arcas de la hermandad. Capaz de cambiar oro, plata y divisas de cualquier rincón para financiar las necesidades esenciales del banco de la orden.</div>
                     </div>
+
                     <div class="miembro">
-                        <div class="icono">✨</div>
-                        <strong style="color: var(--color-sacerdote);">Sumo Sacerdote</strong>
-                        <div class="rango">Oficial Reclutador</div>
-                        <div class="lore-corto">Mantenedor de la moral y sanador supremo.</div>
-                    </div>
-                    <div class="miembro">
-                        <div class="icono">🌿</div>
-                        <strong style="color: var(--color-druida);">Anciano Druida</strong>
-                        <div class="rango">Oficial de Loot</div>
-                        <div class="lore-corto">Encargado de la distribución justa de botín.</div>
+                        <div class="icono">📣</div>
+                        <strong style="color: var(--color-sacerdote);">Adenabor</strong>
+                        <div class="rango">Oficial / Atención</div>
+                        <div class="lore-corto">La voz de la paciencia. Resuelve disputas internas, gestiona la logística diaria y asiste a los nuevos reclutas cuando se pierden en los mapas.</div>
                     </div>
                 </div>
             </div>
         </div>
-        <a href="#unirse" class="btn-unirse">Unirse a la Orden</a>
+
+        <div class="wrapper-btn">
+            <button class="btn-unirse" onclick="mostrarModalReclutamiento()">Unirse a las Filas</button>
+        </div>
     </div>
 
-    <!-- PESTAÑA: RESUMEN -->
+    <!-- 2. PESTAÑA: RESUMEN -->
     <div id="resumen" class="seccion-contenido">
         <div class="contenedor">
-            <div class="tarjeta">
-                <h2>📊 Estado de la Hermandad</h2>
-                <p><strong>Reino:</strong> Dun Modr (Alianza)</p>
-                <p><strong>Nivel de Hermandad:</strong> 30</p>
-                <p><strong>Miembros Activos:</strong> 85+</p>
-                <p><strong>Enfoque:</strong> PVE Mítico / Míticas+</p>
-            </div>
-            <div class="tarjeta">
-                <h2>⏰ Horarios de Raid</h2>
-                <p><strong>Días principales:</strong> Miércoles, Jueves y Domingo</p>
-                <p><strong>Horario:</strong> 22:00 - 00:30 (Hora Servidor)</p>
-                <p><strong>Invites:</strong> 21:45 (Se requiere puntualidad)</p>
+            <div class="tarjeta" style="grid-column: 1 / -1;">
+                <h2>📋 Cómputo Global de Warcraft Logs</h2>
+                <p style="font-size: 1.05rem; line-height: 1.8;">
+                    Módulo de agregación automática de datos. Cada log procesado computa el porcentaje de efectividad militar y rendimiento global de la hermandad.
+                </p>
+
+                <div class="grid-computo-global">
+                    <div class="caja-stat-global">
+                        <div class="numero" id="stat-total-logs">0</div>
+                        <div class="etiqueta">Logs Procesados</div>
+                    </div>
+                    <div class="caja-stat-global">
+                        <div class="numero" id="stat-kills">0</div>
+                        <div class="etiqueta">Jefes Derrotados</div>
+                    </div>
+                    <div class="caja-stat-global">
+                        <div class="numero" id="stat-tasa">0%</div>
+                        <div class="etiqueta">Efectividad Global</div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- PESTAÑA: PROGRESIÓN -->
+    <!-- 3. PESTAÑA: PROGRESIÓN -->
     <div id="progresion" class="seccion-contenido">
         <div class="contenedor">
             <div class="tarjeta" style="grid-column: 1 / -1;">
-                <h2>🏰 Progresión de Banda Actual</h2>
-                <div class="contenedor-barras">
-                    <p>Palacio Nerub'ar (Heroico) - 8/8</p>
-                    <div class="barra-progreso">
-                        <div class="barra-llena" style="width: 100%; background-color: var(--dorado-wow);">100% Completado</div>
-                    </div>
+                <h2>
+                    ⚔️ Avance en la Banda Oficial
+                    <button class="btn-log active btn-subir-log" onclick="mostrarModalSubirLog()">➕ Subir Warcraft Log</button>
+                </h2>
+                <p style="margin-bottom: 20px;">
+                    Seguimiento en vivo del estado de los encuentros militares extraídos del Cómputo Global:
+                </p>
 
-                    <p>Palacio Nerub'ar (Mítico) - 5/8</p>
-                    <div class="barra-progreso">
-                        <div class="barra-llena" style="width: 62.5%; background-color: var(--dorado-brillante);">62.5% Completado</div>
-                    </div>
+                <div class="tabla-contenedor">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Encuentro / Jefe</th>
+                                <th>Dificultad</th>
+                                <th>Estado</th>
+                                <th>Warcraft Logs</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabla-progresion-body">
+                            <!-- Inyectado mediante JS -->
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- PESTAÑA: LOGROS -->
+    <!-- 4. PESTAÑA: LOGROS -->
     <div id="logros" class="seccion-contenido">
         <div class="contenedor">
-            <div class="tarjeta">
-                <h2>🏆 Hazañas Destacadas</h2>
-                <ul>
-                    <li><strong>Aventajado:</strong> Limpieza Heroica en semana 2.</li>
-                    <li><strong>Míticas+:</strong> 15+ miembros superando los 3000 de Score.</li>
-                    <li><strong>Banda de Hermandad:</strong> Logros de banda en grupo completo de orden.</li>
-                </ul>
+            <div class="tarjeta" style="grid-column: 1 / -1;">
+                <h2>🏆 Hazañas de la Hermandad</h2>
+                <p style="font-size: 1.05rem; line-height: 1.8;">
+                    Espacio reservado para las proezas del clan, logros de hermandad y desafíos míticos completados en tiempo por los miembros.
+                </p>
             </div>
         </div>
     </div>
 
-    <!-- PESTAÑA: RENDIMIENTO -->
+    <!-- 5. PESTAÑA: RENDIMIENTO -->
     <div id="rendimiento" class="seccion-contenido">
         <div class="contenedor">
-            <div class="tarjeta" style="grid-column: 1 / -1;">
-                <h2>⚡ Cuadro de Honor de Rendimiento (Parses)</h2>
-                <div class="contenedor-barras">
-                    <p>Guerrero Tanke</p>
-                    <div class="barra-progreso">
-                        <div class="barra-llena" style="width: 98%; background-color: var(--color-guerrero);">98% Parse</div>
-                    </div>
+            <div class="tarjeta">
+                <h2>⚔️ Top Daño por Segundo (DPS) - Warcraft Logs Parse</h2>
+                <p style="margin-bottom: 18px; font-size: 0.88rem;">Mejores registros semanales extraídos automáticamente del análisis de combate:</p>
+                
+                <div class="contenedor-barras" id="muro-dps-container">
+                    <!-- Inyectado por Javascript -->
+                </div>
+            </div>
 
-                    <p>Mago Fuego</p>
-                    <div class="barra-progreso">
-                        <div class="barra-llena" style="width: 95%; background-color: var(--color-mago);">95% Parse</div>
-                    </div>
-
-                    <p>Sacerdote Sagrado</p>
-                    <div class="barra-progreso">
-                        <div class="barra-llena" style="width: 92%; background-color: var(--color-sacerdote);">92% Parse</div>
-                    </div>
-
-                    <p>Druida Equilibrio</p>
-                    <div class="barra-progreso">
-                        <div class="barra-llena" style="width: 89%; background-color: var(--color-druida);">89% Parse</div>
-                    </div>
+            <div class="tarjeta">
+                <h2>💚 Top Sanación (HPS) - Warcraft Logs Parse</h2>
+                <p style="margin-bottom: 18px; font-size: 0.88rem;">Líderes de mitigación y restauración en situaciones críticas de la banda:</p>
+                
+                <div class="contenedor-barras" id="muro-hps-container">
+                    <!-- Inyectado por Javascript -->
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- PESTAÑA: CONTROL -->
+    <!-- 6. PESTAÑA: CONTROL -->
     <div id="control" class="seccion-contenido">
         <div class="contenedor">
             <div class="tarjeta" style="grid-column: 1 / -1;">
-                <h2>📋 Control de Asistencia y Roster</h2>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Jugador</th>
-                            <th>Clase</th>
-                            <th>Rol</th>
-                            <th>Asistencia %</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>Arakthor</td>
-                            <td style="color: var(--color-guerrero);">Guerrero</td>
-                            <td>Tanque</td>
-                            <td>100%</td>
-                        </tr>
-                        <tr>
-                            <td>Astraea</td>
-                            <td style="color: var(--color-mago);">Mago</td>
-                            <td>DPS</td>
-                            <td>95%</td>
-                        </tr>
-                        <tr>
-                            <td>Elysia</td>
-                            <td style="color: var(--color-sacerdote);">Sacerdote</td>
-                            <td>Sanador</td>
-                            <td>98%</td>
-                        </tr>
-                        <tr>
-                            <td>Sylvanis</td>
-                            <td style="color: var(--color-druida);">Druida</td>
-                            <td>DPS</td>
-                            <td>90%</td>
-                        </tr>
-                    </tbody>
-                </table>
+                <h2>⚙️ Control de Asistencia y Disponibilidad</h2>
+                <p style="margin-bottom: 20px;">
+                    Supervisión del núcleo principal de asalto de cara a mantener la optimización de grupos organizados:
+                </p>
+
+                <div class="tabla-contenedor">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Jugador / Rango</th>
+                                <th>Asistencia General</th>
+                                <th>Puntualidad</th>
+                                <th>Estado de Guardia</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Miembro Núcleo 1 (DPS)</strong></td>
+                                <td style="color: #4ade80; font-weight: 700;">100%</td>
+                                <td>Excelente</td>
+                                <td><span class="badge" style="background: rgba(37, 99, 235, 0.2); color: #93c5fd; border: 1px solid rgba(37, 99, 235, 0.4);">Listo para Raid</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Miembro Núcleo 2 (Tanque)</strong></td>
+                                <td style="color: #facc15; font-weight: 700;">95%</td>
+                                <td>Aceptable</td>
+                                <td><span class="badge" style="background: rgba(37, 99, 235, 0.2); color: #93c5fd; border: 1px solid rgba(37, 99, 235, 0.4);">Listo para Raid</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- PESTAÑA: HISTORIAL -->
+    <!-- 7. PESTAÑA: HISTORIAL -->
     <div id="historial" class="seccion-contenido">
         <div class="contenedor">
             <div class="tarjeta" style="grid-column: 1 / -1;">
-                <h2>📜 Registro de Hitos de la Hermandad</h2>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Fecha</th>
-                            <th>Hito Alcanzado</th>
-                            <th>Detalles</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>15 Oct 2026</td>
-                            <td>Derrota de Boss Mítico 5</td>
-                            <td>First kill de la hermandad en 12 intentos.</td>
-                        </tr>
-                        <tr>
-                            <td>01 Sep 2026</td>
-                            <td>Limpieza Heroica Completa</td>
-                            <td>Desbloqueo del logro de Aventajado para el roster principal.</td>
-                        </tr>
-                        <tr>
-                            <td>15 Ago 2026</td>
-                            <td>Fundación de la Orden</td>
-                            <td>Establecimiento oficial en Dun Modr.</td>
-                        </tr>
-                    </tbody>
-                </table>
+                <h2>📖 Archivo Cronológico de Logs</h2>
+                <p style="font-size: 1.05rem; line-height: 1.8; margin-bottom: 20px;">
+                    Registro histórico de los encuentros militares procesados por el sistema global:
+                </p>
+
+                <div class="tabla-contenedor">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Fecha</th>
+                                <th>Encuentro</th>
+                                <th>Resultado</th>
+                                <th>Top DPS</th>
+                                <th>Top HPS</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabla-historial-body">
+                            <!-- Inyectado con JS -->
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- PESTAÑA: LOOT -->
+    <!-- 8. PESTAÑA: LOOT -->
     <div id="loot" class="seccion-contenido">
         <div class="contenedor">
             <div class="tarjeta" style="grid-column: 1 / -1;">
-                <h2>👑 Normativa y Sistema de Botín</h2>
-                <p>En <strong>Vigilantes de Azeroth</strong> utilizamos un sistema transparente apoyado en <strong>Loot Council</strong> (Consejo de Botín) mediante la addon RClootcouncil.</p>
-                <h3>Prioridad de asignación:</h3>
-                <ul>
-                    <li><strong>Mejora Principal (BIS):</strong> Piezas clave para aumentar el rendimiento del grupo.</li>
-                    <li><strong>Asistencia y Puntualidad:</strong> Se prioriza a los jugadores constantes.</li>
-                    <li><strong>Bonus de Conjunto:</strong> Completar sets de tier prioritarios para DPS/Tanks/Healers.</li>
-                </ul>
+                <h2>💎 Distribución de Botín</h2>
+                <p style="font-size: 1.05rem; line-height: 1.8;">
+                    Módulo destinado al control de reparto de piezas de equipo épicas, recompensas legendarias y prioridades de banco asignadas.
+                </p>
             </div>
         </div>
     </div>
 
-    <!-- SCRIPT JAVASCRIPT PARA PESTAÑAS INTERACTIVAS -->
-    <script>
-        function abrirPestana(evt, nombrePestana) {
-            let i, seccion, tabLinks;
+    <footer>
+        <p>&copy; Vigilantes de Azeroth - Hermandad de World of Warcraft (Alianza)</p>
+        <p style="color: #64748b; font-size: 0.78rem; margin-top: 5px;">World of Warcraft y Blizzard Entertainment son marcas registradas.</p>
+    </footer>
 
-            // Ocultar todas las secciones
-            seccion = document.getElementsByClassName("seccion-contenido");
-            for (i = 0; i < seccion.length; i++) {
-                seccion[i].classList.remove("active");
-            }
+    <!-- MODAL DE ACCESO PARA OFICIALES -->
+    <div id="modalLoginOficial" class="modal-overlay">
+        <div class="modal-caja" style="max-width: 420px;">
+            <h3>🔑 Acceso para Oficiales</h3>
+            <p>Introduce el código de acceso del Alto Consejo para desbloquear el permiso de subida y edición de logs.</p>
+            
+            <form onsubmit="verificarClaveOficial(event)">
+                <div class="form-grupo">
+                    <label>Clave de Oficial (Por defecto: 1234)</label>
+                    <input type="password" id="inputClaveOficial" placeholder="••••" required style="text-align:center; font-size:1.2rem; letter-spacing:4px;">
+                </div>
 
-            // Quitar clase 'active' de todos los botones
-            tabLinks = document.getElementsByClassName("tab-btn");
-            for (i = 0; i < tabLinks.length; i++) {
-                tabLinks[i].classList.remove("active");
-            }
+                <div id="errorClave" style="color: #f87171; font-size: 0.85rem; margin-bottom: 12px; display: none;">
+                    ❌ Clave incorrecta. Consulta con Viktor, Pescadito o Juarezote.
+                </div>
 
-            // Mostrar la pestaña actual y marcar el botón activo
-            document.getElementById(nombrePestana).classList.add("active");
-            evt.currentTarget.classList.add("active");
-        }
-    </script>
+                <div>
+                    <button type="submit" class="btn-cerrar-modal">Entrar como Oficial</button>
+                    <button type="button" class="btn-secundario-modal" onclick="cerrarModalLoginOficial()">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL PARA SUBIR WARCRAFT LOG -->
+    <div id="modalSubirLog" class="modal-overlay">
+        <div class="modal-caja">
+            <h3>📊 Registrador de Warcraft Logs</h3>
+            <p>Ingresa un reporte de WarcraftLogs o completa los datos para actualizar el cómputo global de la hermandad.</p>
+
+            <form onsubmit="guardarLogFormulario(event)">
+                <div class="form-grupo">
+                    <label>Jefe / Encuentro</label>
+                    <input type="text" id="logJefe" placeholder="Ej. Reina Ansurek" required>
+                </div>
+
+                <div style="display:flex; gap:10px;">
+                    <div class="form-grupo" style="flex:1;">
+                        <label>Dificultad</label>
+                        <select id="logDificultad">
+                            <option value="Heroica">Heroica</option>
+                            <option value="Mítica">Mítica</option>
+                            <option value="Normal">Normal</option>
+                        </select>
+                    </div>
+
+                    <div class="form-grupo" style="flex:1;">
+                        <label>Resultado</label>
+                        <select id="logResultado">
+                            <option value="Derrotado">Derrotado (Kill)</option>
+                            <option value="Wipe">Wipe</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-grupo">
+                    <label>Fecha del Asalto</label>
+                    <input type="date" id="logFecha">
+                </div>
+
+                <div style="display:flex; gap:10px;">
+                    <div class="form-grupo" style="flex:1;">
+                        <label>Top DPS (Nombre y Daño)</label>
+                        <input type="text" id="logDpsNombre" placeholder="Ej. Viktor">
+                        <input type="text" id="logDpsM" placeholder="Ej. 1.45M" style="margin-top:5px;">
+                        <input type="number" id="logDpsParse" placeholder="Parse % (Ej. 95)" style="margin-top:5px;">
+                    </div>
+
+                    <div class="form-grupo" style="flex:1;">
+                        <label>Top HPS (Nombre y Sanación)</label>
+                        <input type="text" id="logHpsNombre" placeholder="Ej. Pescadito">
+                        <input type="text" id="logHpsM" placeholder="Ej. 980K" style="margin-top:5px;">
+                        <input type="number" id="logHpsParse" placeholder="Parse % (Ej. 92)" style="margin-top:5px;">
+                    </div>
+                </div>
+
+                <div style="margin-top: 15px;">
+                    <button type="submit" class="btn-cerrar-modal">Guardar Log</button>
+                    <button type="button" class="btn-secundario-modal" onclick="simularLogAleatorio()">🎲 Generar Log de Prueba</button>
+                    <button type="button" class="btn-secundario-modal" onclick="cerrarModalSubirLog()">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL INTERACTIVO PARA COMUNICADOS -->
+    <div id="modalComunicado" class="modal-overlay">
+        <div class="modal-caja">
+            <h3 id="modalTitulo">👑 Solicitud de Ingreso</h3>
+            <div id="modalMensaje"></div>
+            <button class="btn-cerrar-modal" style="margin-top: 15px;" onclick="cerrarModal()">Aceptar</button>
+        </div>
+    </div>
 </body>
 </html>
