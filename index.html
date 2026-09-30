@@ -254,7 +254,7 @@
             padding: 10px 18px !important;
             align-self: center;
             box-shadow: 0 0 10px rgba(29, 78, 216, 0.4);
-            display: none; /* Controlado por permisos */
+            display: none;
         }
         .btn-subir-log-nav:hover {
             background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%) !important;
@@ -697,36 +697,14 @@
     </style>
 
     <script>
-        // Clave secreta por defecto para oficiales (se puede personalizar)
         const CLAVE_OFICIAL_SECRETA = "1234";
+        let logAEliminarId = null;
 
-        // Estado inicial de logs
-        let logsHermandad = [
-            {
-                id: 'log-001',
-                fecha: '2026-09-20',
-                jefe: 'Primer Guardián del Bastión',
-                dificultad: 'Heroica',
-                resultado: 'Derrotado',
-                duracion: '04:22',
-                dpsTop: { jugador: 'Viktor', clase: 'Mago Arcano', dps: '1.42M', parse: 96, color: '#3fc7eb' },
-                hpsTop: { jugador: 'Pescadito', clase: 'Sacerdote Sagrado', hps: '980K', parse: 94, color: '#ffffff' },
-                asistencia: 20,
-                url: 'https://fresh.warcraftlogs.com/reports/1Y8naxTyRLqD3Hk9'
-            },
-            {
-                id: 'log-002',
-                fecha: '2026-09-27',
-                jefe: 'El General Forjado por el Vacío',
-                dificultad: 'Heroica',
-                resultado: 'Wipe (12%)',
-                duracion: '06:15',
-                dpsTop: { jugador: 'Juarezote', clase: 'Guerrero Furia', dps: '1.35M', parse: 89, color: '#c69b6d' },
-                hpsTop: { jugador: 'Adenabor', clase: 'Druida Restauración', hps: '890K', parse: 87, color: '#ff7c0a' },
-                asistencia: 19,
-                url: 'https://fresh.warcraftlogs.com/reports/1Y8naxTyRLqD3Hk9'
-            }
-        ];
+        // Estado inicial sin datos ficticios para empezar limpio
+        let logsHermandad = [];
+
+        // Estado de permisos del usuario actual
+        let esOficial = localStorage.getItem('vigilantes_es_oficial') === 'true';
 
         // Cargar logs guardados en el navegador local
         function cargarLogsStorage() {
@@ -745,8 +723,69 @@
             localStorage.setItem('vigilantes_logs', JSON.stringify(logsHermandad));
         }
 
-        // Estado de permisos del usuario actual
-        let esOficial = localStorage.getItem('vigilantes_es_oficial') === 'true';
+        // Recalcular métricas e indicadores globales de la hermandad
+        function recalcularComputoGlobal() {
+            const totalLogs = logsHermandad.length;
+            const totalKills = logsHermandad.filter(l => l.resultado === 'Derrotado').length;
+            const efectividad = totalLogs > 0 ? Math.round((totalKills / totalLogs) * 100) : 0;
+
+            const elTotal = document.getElementById('stat-total-logs');
+            const elKills = document.getElementById('stat-kills');
+            const elTasa = document.getElementById('stat-tasa');
+            const elHeaderCount = document.getElementById('header-logs-count');
+
+            if (elTotal) elTotal.innerText = totalLogs;
+            if (elKills) elKills.innerText = totalKills;
+            if (elTasa) elTasa.innerText = efectividad + '%';
+            if (elHeaderCount) elHeaderCount.innerText = totalLogs;
+
+            renderizarTablaProgresion();
+            renderizarTablaHistorial();
+            renderizarMuroDeLaFama();
+        }
+
+        // Abrir ventana modal de acceso para oficiales
+        function abrirModalLoginOficial() {
+            const errorDiv = document.getElementById('errorClave');
+            if (errorDiv) errorDiv.style.display = 'none';
+            const inputClave = document.getElementById('inputClaveOficial');
+            if (inputClave) inputClave.value = '';
+            const modal = document.getElementById('modalLoginOficial');
+            if (modal) modal.classList.add('active');
+        }
+
+        // Cerrar ventana modal de oficiales
+        function cerrarModalLoginOficial() {
+            const modal = document.getElementById('modalLoginOficial');
+            if (modal) modal.classList.remove('active');
+        }
+
+        // Validar clave e iniciar sesión de Oficial
+        function verificarClaveOficial(e) {
+            if (e) e.preventDefault();
+            const input = document.getElementById('inputClaveOficial');
+            const clave = input ? input.value : '';
+            const errorDiv = document.getElementById('errorClave');
+
+            if (clave === CLAVE_OFICIAL_SECRETA) {
+                esOficial = true;
+                localStorage.setItem('vigilantes_es_oficial', 'true');
+                if (errorDiv) errorDiv.style.display = 'none';
+                cerrarModalLoginOficial();
+                actualizarVisibilidadPermisos();
+                mostrarNotificacionModal("🔑 Acceso Concedido", "Has iniciado sesión como Oficial. Puedes gestionar, subir y borrar los logs.");
+            } else {
+                if (errorDiv) errorDiv.style.display = 'block';
+            }
+        }
+
+        // Cerrar sesión de Oficial
+        function cerrarModoOficial() {
+            esOficial = false;
+            localStorage.setItem('vigilantes_es_oficial', 'false');
+            actualizarVisibilidadPermisos();
+            mostrarNotificacionModal("🔒 Modo Oficial Cerrado", "Has salido del modo de administración.");
+        }
 
         // Alternar visibilidad de botones exclusivos de Oficiales
         function actualizarVisibilidadPermisos() {
@@ -772,59 +811,50 @@
                     `;
                 }
             }
-        }
-
-        function abrirModalLoginOficial() {
-            document.getElementById('modalLoginOficial').classList.add('active');
-            document.getElementById('inputClaveOficial').value = '';
-            document.getElementById('errorClave').style.display = 'none';
-        }
-
-        function cerrarModalLoginOficial() {
-            document.getElementById('modalLoginOficial').classList.remove('active');
-        }
-
-        function verificarClaveOficial(e) {
-            e.preventDefault();
-            const claveIngresada = document.getElementById('inputClaveOficial').value;
-            if (claveIngresada === CLAVE_OFICIAL_SECRETA) {
-                esOficial = true;
-                localStorage.setItem('vigilantes_es_oficial', 'true');
-                actualizarVisibilidadPermisos();
-                cerrarModalLoginOficial();
-                mostrarNotificacionModal("👑 Modo Oficial Activado", "Bienvenido, Oficial de Azeroth. Ahora tienes permiso para registrar y gestionar los Warcraft Logs de la hermandad.");
-            } else {
-                document.getElementById('errorClave').style.display = 'block';
-            }
-        }
-
-        function cerrarModoOficial() {
-            esOficial = false;
-            localStorage.setItem('vigilantes_es_oficial', 'false');
-            actualizarVisibilidadPermisos();
-            mostrarNotificacionModal("🛡️ Modo Visitante Activado", "Has cerrado la sesión de oficial. La interfaz ahora se muestra en modo solo lectura.");
-        }
-
-        function recalcularComputoGlobal() {
-            const totalLogs = logsHermandad.length;
-            const victoriaBosses = logsHermandad.filter(l => l.resultado === 'Derrotado').length;
-            const tasaVictoria = totalLogs > 0 ? Math.round((victoriaBosses / totalLogs) * 100) : 0;
-
-            const elTotalLogs = document.getElementById('stat-total-logs');
-            if (elTotalLogs) elTotalLogs.innerText = totalLogs;
-
-            const elKills = document.getElementById('stat-kills');
-            if (elKills) elKills.innerText = victoriaBosses;
-
-            const elTasa = document.getElementById('stat-tasa');
-            if (elTasa) elTasa.innerText = tasaVictoria + '%';
-
-            const elHeaderLogs = document.getElementById('header-logs-count');
-            if (elHeaderLogs) elHeaderLogs.innerText = totalLogs;
 
             renderizarTablaProgresion();
             renderizarTablaHistorial();
-            renderizarMuroDeLaFama();
+        }
+
+        function solicitarEliminarLog(id) {
+            if (!esOficial) {
+                mostrarNotificacionModal("🔒 Permiso Denegado", "Debes estar identificado como Oficial para eliminar registros.");
+                return;
+            }
+            logAEliminarId = id;
+            const log = logsHermandad.find(l => l.id === id);
+            const nombre = log ? `${log.jefe} (${log.fecha})` : 'este registro';
+
+            document.getElementById('modalTitulo').innerText = "🗑️ Eliminar Warcraft Log";
+            document.getElementById('modalMensaje').innerHTML = `
+                <div style="text-align:center; padding:10px 0;">
+                    <p style="font-size:1.05rem; color:#f1f5f9; margin-bottom:15px;">
+                        ¿Estás seguro de que deseas eliminar permanentemente el reporte de<br><strong style="color:var(--dorado-brillante);">${nombre}</strong>?
+                    </p>
+                    <p style="font-size:0.85rem; color:#94a3b8; margin-bottom:20px;">
+                        Esta acción recalculará la efectividad y estadísticas globales de la hermandad.
+                    </p>
+                    <div style="display:flex; gap:12px; justify-content:center;">
+                        <button onclick="confirmarEliminarLog()" class="btn-cerrar-modal" style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); color:#ffffff; border:1px solid #f87171;">
+                            🗑️ Sí, Eliminar
+                        </button>
+                        <button onclick="cerrarModal()" class="btn-secundario-modal">
+                            Cancelar
+                        </button>
+                    </div>
+                </div>
+            `;
+            document.getElementById('modalComunicado').classList.add('active');
+        }
+
+        function confirmarEliminarLog() {
+            if (!logAEliminarId) return;
+            logsHermandad = logsHermandad.filter(l => l.id !== logAEliminarId);
+            logAEliminarId = null;
+            guardarLogsStorage();
+            recalcularComputoGlobal();
+            cerrarModal();
+            mostrarNotificacionModal("🗑️ Log Eliminado", "El reporte ha sido eliminado correctamente del cómputo de la hermandad.");
         }
 
         function renderizarTablaProgresion() {
@@ -832,7 +862,7 @@
             if (!tbody) return;
 
             if (logsHermandad.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#94a3b8;">No hay logs registrados aún.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#94a3b8; padding:25px; font-style:italic;">No hay logs registrados aún. Haz clic en "Subir Warcraft Log" para registrar tus primeros combates.</td></tr>`;
                 return;
             }
 
@@ -840,20 +870,25 @@
                 const esKill = log.resultado === 'Derrotado';
                 const badgeClass = esKill ? 'badge-derrotado' : 'badge-vivo';
                 const badgeIcon = esKill ? '🏆 DERROTADO' : '❌ ' + log.resultado;
-                const urlLog = log.url || 'https://fresh.warcraftlogs.com/reports/1Y8naxTyRLqD3Hk9';
+                const urlLog = log.url || 'https://warcraftlogs.com';
                 
                 return `
                     <tr>
                         <td><strong>${log.jefe}</strong> <br><small style="color:#64748b;">${log.fecha} (${log.duracion})</small></td>
-                        <td>${log.dificultad}</td>
+                        <td><span style="color:#f0cb6b; font-weight:600;">${log.dificultad || 'Única'}</span></td>
                         <td><span class="badge ${badgeClass}">${badgeIcon}</span></td>
                         <td>
                             <button class="btn-log active" onclick="mostrarModalDetalleLog('${log.id}')" style="margin-right:4px;">
                                 📊 Parse
                             </button>
-                            <a href="${urlLog}" target="_blank" rel="noopener noreferrer" class="btn-log active" style="background: rgba(193, 158, 69, 0.2); color: #f0cb6b; border-color: var(--borde-dorado);">
+                            <a href="${urlLog}" target="_blank" rel="noopener noreferrer" class="btn-log active" style="background: rgba(193, 158, 69, 0.2); color: #f0cb6b; border-color: var(--borde-dorado); margin-right:4px;">
                                 🌐 WarcraftLogs ↗
                             </a>
+                            ${esOficial ? `
+                                <button class="btn-log" onclick="solicitarEliminarLog('${log.id}')" style="background: rgba(239, 68, 68, 0.2); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.5); cursor: pointer;" title="Eliminar Log">
+                                    🗑️ Borrar
+                                </button>
+                            ` : ''}
                         </td>
                     </tr>
                 `;
@@ -862,21 +897,46 @@
 
         function renderizarTablaHistorial() {
             const tbody = document.getElementById('tabla-historial-body');
+            const theadTr = document.getElementById('tabla-historial-head-row');
             if (!tbody) return;
 
+            if (theadTr) {
+                theadTr.innerHTML = `
+                    <th>Fecha</th>
+                    <th>Encuentro</th>
+                    <th>Resultado</th>
+                    <th>Top DPS</th>
+                    <th>Top HPS</th>
+                    ${esOficial ? '<th>Acciones</th>' : ''}
+                `;
+            }
+
+            if (logsHermandad.length === 0) {
+                const colSpan = esOficial ? 6 : 5;
+                tbody.innerHTML = `<tr><td colspan="${colSpan}" style="text-align:center; color:#94a3b8; padding:25px; font-style:italic;">No hay registros en el historial. Los logs procesados aparecerán aquí.</td></tr>`;
+                return;
+            }
+
             tbody.innerHTML = logsHermandad.map(log => {
-                const urlLog = log.url || 'https://fresh.warcraftlogs.com/reports/1Y8naxTyRLqD3Hk9';
+                const urlLog = log.url || 'https://warcraftlogs.com';
                 return `
                 <tr>
                     <td><strong>${log.fecha}</strong></td>
                     <td>
                         <a href="${urlLog}" target="_blank" rel="noopener noreferrer" style="color:#f0cb6b; text-decoration:none; font-weight:bold;">
-                            ${log.jefe} (${log.dificultad}) ↗
+                            ${log.jefe} ↗
                         </a>
                     </td>
                     <td>${log.resultado}</td>
                     <td style="color:${log.dpsTop.color}; font-weight:bold;">${log.dpsTop.jugador} (${log.dpsTop.dps})</td>
                     <td style="color:${log.hpsTop.color}; font-weight:bold;">${log.hpsTop.jugador} (${log.hpsTop.hps})</td>
+                    ${esOficial ? `
+                        <td>
+                            <button onclick="solicitarEliminarLog('${log.id}')" style="background: rgba(239, 68, 68, 0.2); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.5); padding: 4px 10px; border-radius: 4px; cursor: pointer; font-size: 0.8rem; font-weight:bold;">
+                                🗑️ Borrar
+                            </button>
+                        </td>
+                    ` : ''}
                 </tr>
             `}).join('');
         }
@@ -885,37 +945,41 @@
             const contDPS = document.getElementById('muro-dps-container');
             const contHPS = document.getElementById('muro-hps-container');
 
-            if (contDPS && logsHermandad.length > 0) {
-                const copiaDps = [...logsHermandad].sort((a, b) => b.dpsTop.parse - a.dpsTop.parse);
-                contDPS.innerHTML = copiaDps.slice(0, 3).map(l => `
-                    <div class="etiqueta-barra">
-                        <span style="color: ${l.dpsTop.color};">${l.dpsTop.jugador} (${l.dpsTop.clase})</span>
-                        <span>${l.dpsTop.parse}% Parse (${l.dpsTop.dps})</span>
-                    </div>
-                    <div class="barra-progreso">
-                        <div class="barra-llena" style="width: ${l.dpsTop.parse}%; background-color: ${l.dpsTop.color};">
-                            <span>${l.jefe}</span>
-                            <span>${l.dpsTop.parse}%</span>
-                        </div>
-                    </div>
-                `).join('');
+            if (!contDPS || !contHPS) return;
+
+            if (logsHermandad.length === 0) {
+                contDPS.innerHTML = `<p style="color:#94a3b8; font-style:italic; font-family:'Inter',sans-serif; text-align:center; padding:15px;">No hay registros de DPS aún. Sube un log para visualizar las estadísticas.</p>`;
+                contHPS.innerHTML = `<p style="color:#94a3b8; font-style:italic; font-family:'Inter',sans-serif; text-align:center; padding:15px;">No hay registros de HPS aún. Sube un log para visualizar las estadísticas.</p>`;
+                return;
             }
 
-            if (contHPS && logsHermandad.length > 0) {
-                const copiaHps = [...logsHermandad].sort((a, b) => b.hpsTop.parse - a.hpsTop.parse);
-                contHPS.innerHTML = copiaHps.slice(0, 3).map(l => `
-                    <div class="etiqueta-barra">
-                        <span style="color: ${l.hpsTop.color};">${l.hpsTop.jugador} (${l.hpsTop.clase})</span>
-                        <span>${l.hpsTop.parse}% Parse (${l.hpsTop.hps})</span>
+            const copiaDps = [...logsHermandad].sort((a, b) => b.dpsTop.parse - a.dpsTop.parse);
+            contDPS.innerHTML = copiaDps.slice(0, 3).map(l => `
+                <div class="etiqueta-barra">
+                    <span style="color: ${l.dpsTop.color};">${l.dpsTop.jugador} (${l.dpsTop.clase})</span>
+                    <span>${l.dpsTop.parse}% Parse (${l.dpsTop.dps})</span>
+                </div>
+                <div class="barra-progreso">
+                    <div class="barra-llena" style="width: ${l.dpsTop.parse}%; background-color: ${l.dpsTop.color};">
+                        <span>${l.jefe}</span>
+                        <span>${l.dpsTop.parse}%</span>
                     </div>
-                    <div class="barra-progreso">
-                        <div class="barra-llena" style="width: ${l.hpsTop.parse}%; background-color: ${l.hpsTop.color};">
-                            <span>${l.jefe}</span>
-                            <span>${l.hpsTop.parse}%</span>
-                        </div>
+                </div>
+            `).join('');
+
+            const copiaHps = [...logsHermandad].sort((a, b) => b.hpsTop.parse - a.hpsTop.parse);
+            contHPS.innerHTML = copiaHps.slice(0, 3).map(l => `
+                <div class="etiqueta-barra">
+                    <span style="color: ${l.hpsTop.color};">${l.hpsTop.jugador} (${l.hpsTop.clase})</span>
+                    <span>${l.hpsTop.parse}% Parse (${l.hpsTop.hps})</span>
+                </div>
+                <div class="barra-progreso">
+                    <div class="barra-llena" style="width: ${l.hpsTop.parse}%; background-color: ${l.hpsTop.color};">
+                        <span>${l.jefe}</span>
+                        <span>${l.hpsTop.parse}%</span>
                     </div>
-                `).join('');
-            }
+                </div>
+            `).join('');
         }
 
         function cambiarImagenPerfil(input) {
@@ -930,7 +994,7 @@
         }
 
         function cambiarImagenUrl() {
-            const url = prompt("Introduce la URL de tu imagen en GitHub (ejemplo: https://raw.githubusercontent.com/usuario/repo/main/perfil.jpeg):");
+            const url = prompt("Introduce la URL de tu imagen en GitHub:");
             if (url && url.trim() !== '') {
                 const img = document.getElementById('guild-banner-img');
                 img.src = url.trim();
@@ -1005,7 +1069,6 @@
             try {
                 document.getElementById('logFecha').value = new Date().toISOString().split('T')[0];
                 
-                // Intento de extracción via proxy público
                 const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent('https://www.warcraftlogs.com/reports/' + code)}`;
                 const response = await fetch(proxyUrl);
                 if (response.ok) {
@@ -1025,43 +1088,42 @@
             }
 
             if (!document.getElementById('logJefe').value) {
-                document.getElementById('logJefe').value = 'Asalto a la Fortaleza (' + code.substring(0, 6) + ')';
+                document.getElementById('logJefe').value = 'Encuentro de Raid (' + code.substring(0, 6) + ')';
             }
-            if (!document.getElementById('logDpsNombre').value) document.getElementById('logDpsNombre').value = 'Viktor';
-            if (!document.getElementById('logDpsM').value) document.getElementById('logDpsM').value = '1.48M';
-            if (!document.getElementById('logDpsParse').value) document.getElementById('logDpsParse').value = '96';
+            if (!document.getElementById('logDpsNombre').value) document.getElementById('logDpsNombre').value = 'Top DPS';
+            if (!document.getElementById('logDpsM').value) document.getElementById('logDpsM').value = '1.20M';
+            if (!document.getElementById('logDpsParse').value) document.getElementById('logDpsParse').value = '90';
             
-            if (!document.getElementById('logHpsNombre').value) document.getElementById('logHpsNombre').value = 'Pescadito';
-            if (!document.getElementById('logHpsM').value) document.getElementById('logHpsM').value = '990K';
-            if (!document.getElementById('logHpsParse').value) document.getElementById('logHpsParse').value = '94';
+            if (!document.getElementById('logHpsNombre').value) document.getElementById('logHpsNombre').value = 'Top Sanador';
+            if (!document.getElementById('logHpsM').value) document.getElementById('logHpsM').value = '850K';
+            if (!document.getElementById('logHpsParse').value) document.getElementById('logHpsParse').value = '90';
 
             estadoDiv.style.color = '#4ade80';
-            estadoDiv.innerText = `✅ Enlace de Warcraft Logs #${code} importado con éxito. Se guardará el acceso directo.`;
+            estadoDiv.innerText = `✅ Enlace de Warcraft Logs #${code} importado con éxito.`;
         }
 
         function guardarLogFormulario(e) {
             e.preventDefault();
-            const urlInput = document.getElementById('logUrlInput').value.trim() || 'https://fresh.warcraftlogs.com/reports/1Y8naxTyRLqD3Hk9';
+            const urlInput = document.getElementById('logUrlInput').value.trim() || 'https://warcraftlogs.com';
             const jefe = document.getElementById('logJefe').value;
-            const dificultad = document.getElementById('logDificultad').value;
             const resultado = document.getElementById('logResultado').value;
             const fecha = document.getElementById('logFecha').value || new Date().toISOString().split('T')[0];
             const dpsNombre = document.getElementById('logDpsNombre').value || 'Jugador DPS';
-            const dpsM = document.getElementById('logDpsM').value || '1.20M';
+            const dpsM = document.getElementById('logDpsM').value || '1.00M';
             const dpsParse = parseInt(document.getElementById('logDpsParse').value) || 85;
             const hpsNombre = document.getElementById('logHpsNombre').value || 'Jugador Sanador';
-            const hpsM = document.getElementById('logHpsM').value || '850K';
+            const hpsM = document.getElementById('logHpsM').value || '750K';
             const hpsParse = parseInt(document.getElementById('logHpsParse').value) || 85;
 
             const nuevoLog = {
                 id: 'log-' + Date.now(),
                 fecha: fecha,
                 jefe: jefe,
-                dificultad: dificultad,
+                dificultad: 'Única',
                 resultado: resultado,
                 duracion: '05:30',
-                dpsTop: { jugador: dpsNombre, clase: 'Guerrero / Mago', dps: dpsM, parse: dpsParse, color: '#f0cb6b' },
-                hpsTop: { jugador: hpsNombre, clase: 'Sacerdote / Druida', hps: hpsM, parse: hpsParse, color: '#3fc7eb' },
+                dpsTop: { jugador: dpsNombre, clase: 'DPS', dps: dpsM, parse: dpsParse, color: '#f0cb6b' },
+                hpsTop: { jugador: hpsNombre, clase: 'Sanador', hps: hpsM, parse: hpsParse, color: '#3fc7eb' },
                 asistencia: 20,
                 url: urlInput
             };
@@ -1070,49 +1132,28 @@
             guardarLogsStorage();
             recalcularComputoGlobal();
             cerrarModalSubirLog();
-            mostrarNotificacionModal("📊 Log Registrado", "El registro se ha guardado con su enlace directo a Warcraft Logs.");
-        }
-
-        function simularLogAleatorio() {
-            const jefes = ['Reina Ansurek', 'Sikran', 'Rashanan', 'Ovinax el Abominable', 'Kyveza'];
-            const difs = ['Heroica', 'Mítica'];
-            const dpsJugadores = ['Viktor', 'Juarezote', 'Caly', 'Adenabor', 'Pescadito'];
-            
-            const j = jefes[Math.floor(Math.random() * jefes.length)];
-            const d = difs[Math.floor(Math.random() * difs.length)];
-            const jug = dpsJugadores[Math.floor(Math.random() * dpsJugadores.length)];
-            const p = Math.floor(Math.random() * 25) + 75;
-
-            const logSim = {
-                id: 'log-' + Date.now(),
-                fecha: new Date().toISOString().split('T')[0],
-                jefe: j,
-                dificultad: d,
-                resultado: 'Derrotado',
-                duracion: '04:' + Math.floor(Math.random() * 50 + 10),
-                dpsTop: { jugador: jug, clase: 'Mago / Guerrero', dps: (1.3 + Math.random() * 0.4).toFixed(2) + 'M', parse: p, color: '#3fc7eb' },
-                hpsTop: { jugador: 'Pescadito', clase: 'Sacerdote', hps: '990K', parse: 91, color: '#ffffff' },
-                asistencia: 20,
-                url: 'https://fresh.warcraftlogs.com/reports/1Y8naxTyRLqD3Hk9'
-            };
-
-            logsHermandad.unshift(logSim);
-            guardarLogsStorage();
-            recalcularComputoGlobal();
-            cerrarModalSubirLog();
-            mostrarNotificacionModal("🎲 Log Simulado Registrado", "Se ha insertado un nuevo combate de prueba con éxito.");
+            mostrarNotificacionModal("📊 Log Registrado", "El registro se ha guardado correctamente con su enlace a Warcraft Logs.");
         }
 
         function mostrarModalDetalleLog(id) {
             const log = logsHermandad.find(l => l.id === id);
             if (!log) return;
 
-            const urlLog = log.url || 'https://fresh.warcraftlogs.com/reports/1Y8naxTyRLqD3Hk9';
+            const urlLog = log.url || 'https://warcraftlogs.com';
             document.getElementById('modalTitulo').innerText = "📊 Warcraft Log: " + log.jefe;
+            
+            const botonBorrarModal = esOficial ? `
+                <div style="margin-top:15px; padding-top:12px; border-top:1px solid rgba(239, 68, 68, 0.3); text-align:right;">
+                    <button onclick="solicitarEliminarLog('${log.id}')" style="background: rgba(239, 68, 68, 0.2); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.5); padding: 6px 14px; border-radius: 4px; cursor: pointer; font-family:'Inter',sans-serif; font-size:0.85rem; font-weight:600;">
+                        🗑️ Eliminar este Log
+                    </button>
+                </div>
+            ` : '';
+
             document.getElementById('modalMensaje').innerHTML = `
                 <div style="text-align:left; background:#0d1017; padding:15px; border-radius:8px; border:1px solid rgba(193,158,69,0.3);">
                     <p style="margin-bottom:8px;"><strong>🗓️ Fecha:</strong> ${log.fecha}</p>
-                    <p style="margin-bottom:8px;"><strong>⚔️ Encuentro:</strong> ${log.jefe} (${log.dificultad})</p>
+                    <p style="margin-bottom:8px;"><strong>⚔️ Encuentro:</strong> ${log.jefe}</p>
                     <p style="margin-bottom:8px;"><strong>🛡️ Resultado:</strong> ${log.resultado}</p>
                     <p style="margin-bottom:8px;"><strong>💥 Top DPS:</strong> <span style="color:${log.dpsTop.color}">${log.dpsTop.jugador} (${log.dpsTop.dps}) - ${log.dpsTop.parse}% Parse</span></p>
                     <p style="margin-bottom:8px;"><strong>💚 Top HPS:</strong> <span style="color:${log.hpsTop.color}">${log.hpsTop.jugador} (${log.hpsTop.hps}) - ${log.hpsTop.parse}% Parse</span></p>
@@ -1122,6 +1163,7 @@
                             ${urlLog} ↗
                         </a>
                     </p>
+                    ${botonBorrarModal}
                 </div>
             `;
             document.getElementById('modalComunicado').classList.add('active');
@@ -1148,10 +1190,10 @@
             recalcularComputoGlobal();
             actualizarVisibilidadPermisos();
 
-            // Cargar banner personalizado si se guardó previamente
-            const bannerGuardado = localStorage.setItem ? localStorage.getItem('vigilantes_banner_custom') : null;
+            const bannerGuardado = localStorage.getItem('vigilantes_banner_custom');
             if (bannerGuardado) {
-                document.getElementById('guild-banner-img').src = bannerGuardado;
+                const img = document.getElementById('guild-banner-img');
+                if (img) img.src = bannerGuardado;
             }
         };
     </script>
@@ -1159,7 +1201,6 @@
 <body>
 
     <header>
-        <!-- LADO IZQUIERDO: Imagen perfil.jpeg -->
         <div class="header-izquierda">
             <div class="marco-dorado-wrapper">
                 <img id="guild-banner-img" 
@@ -1168,18 +1209,8 @@
                      class="imagen-logo" 
                      onerror="activarEstandarteFallback(this)">
             </div>
-            <div style="display:flex; gap:6px; justify-content:center; flex-wrap:wrap; margin-top:8px;">
-                <label class="btn-cambiar-imagen">
-                    📷 Archivo Local
-                    <input type="file" accept="image/*" style="display:none;" onchange="cambiarImagenPerfil(this)">
-                </label>
-                <button type="button" class="btn-cambiar-imagen" onclick="cambiarImagenUrl()">
-                    🔗 URL de GitHub
-                </button>
-            </div>
         </div>
 
-        <!-- LADO DERECHO: Título, Lema y Métricas -->
         <div class="header-derecha">
             <div style="display:flex; align-items:center; gap:12px;">
                 <div class="header-emblem">🛡️</div>
@@ -1188,9 +1219,9 @@
             <div class="lema">"Por la Alianza, custodiamos el frente desde las sombras hasta la eternidad"</div>
             
             <div class="metricas-header">
-                <div class="header-stat-box">🌐 Servidor: <span>DUN MODR</span></div>
+                <div class="header-stat-box">🌐 Servidor: <span>WoW Forever</span></div>
                 <div class="header-stat-box">🦁 Facción: <span>ALIANZA</span></div>
-                <div class="header-stat-box">📜 Warcraft Logs: <span id="header-logs-count">2</span></div>
+                <div class="header-stat-box">📜 Warcraft Logs: <span id="header-logs-count">0</span></div>
                 <div id="badge-modo-acceso"></div>
             </div>
         </div>
@@ -1221,13 +1252,13 @@
             </div>
 
             <div class="tarjeta">
-                <h2>🛡️️ Sobre la Hermandad</h2>
+                <h2>🛡 Sobre la Hermandad</h2>
                 <p>Somos una orden de la Alianza dedicada a defender el reino de cualquier amenaza. Reunimos a los combatientes más tenaces comprometidos con el compañerismo y la superación en cada mazmorra y banda.</p>
             </div>
 
             <div class="tarjeta">
                 <h2>⚔️ Objetivos Activos</h2>
-                <p>Nuestro enfoque se centra en el avance estratégico de bandas (Raids), la conquista de mazmorras míticas de alto nivel y el dominio táctico de los campos de batalla organizados.</p>
+                <p>Nuestro enfoque se centra en el avance estratégico de bandas (Raids), la conquista de mazmorras y el dominio táctico de los campos de batalla organizados en WoW Forever.</p>
             </div>
 
             <div class="tarjeta">
@@ -1237,7 +1268,6 @@
                 </p>
             </div>
 
-            <!-- 👑 EL ALTO CONSEJO (5 FUNDADORES) -->
             <div class="tarjeta" style="grid-column: 1 / -1;">
                 <h2>👑 El Alto Consejo (5 Fundadores)</h2>
                 <div class="consejo-grid">
@@ -1263,7 +1293,7 @@
                     </div>
 
                     <div class="miembro">
-                        <div class="icono">🪙</div>
+                        <div class="icono">💰</div>
                         <strong style="color: #facc15;">Caly</strong>
                         <div class="rango">Oficial / Cambios</div>
                         <div class="lore-corto">Maneja las arcas de la hermandad. Capaz de cambiar oro, plata y divisas de cualquier rincón para financiar las necesidades esenciales del banco de la orden.</div>
@@ -1290,7 +1320,7 @@
             <div class="tarjeta" style="grid-column: 1 / -1;">
                 <h2>📋 Cómputo Global de Warcraft Logs</h2>
                 <p style="font-size: 1.05rem; line-height: 1.8;">
-                    Módulo de agregación automática de datos. Cada log procesado computa el porcentaje de efectividad militar y rendimiento global de la hermandad.
+                    Módulo de agregación automática de datos. Cada log subido calcula automáticamente el porcentaje de efectividad militar y rendimiento global de la hermandad.
                 </p>
 
                 <div class="grid-computo-global">
@@ -1348,7 +1378,7 @@
             <div class="tarjeta" style="grid-column: 1 / -1;">
                 <h2>🏆 Hazañas de la Hermandad</h2>
                 <p style="font-size: 1.05rem; line-height: 1.8;">
-                    Espacio reservado para las proezas del clan, logros de hermandad y desafíos míticos completados en tiempo por los miembros.
+                    Espacio reservado para las proezas del clan, logros de hermandad y desafíos de banda completados por los miembros.
                 </p>
             </div>
         </div>
@@ -1359,7 +1389,7 @@
         <div class="contenedor">
             <div class="tarjeta">
                 <h2>⚔️ Top Daño por Segundo (DPS) - Warcraft Logs Parse</h2>
-                <p style="margin-bottom: 18px; font-size: 0.88rem;">Mejores registros semanales extraídos automáticamente del análisis de combate:</p>
+                <p style="margin-bottom: 18px; font-size: 0.88rem;">Mejores registros extraídos del análisis de combate:</p>
                 
                 <div class="contenedor-barras" id="muro-dps-container">
                     <!-- Inyectado por Javascript -->
@@ -1381,7 +1411,7 @@
     <div id="control" class="seccion-contenido">
         <div class="contenedor">
             <div class="tarjeta" style="grid-column: 1 / -1;">
-                <h2>⚙️ Control de Asistencia y Disponibilidad</h2>
+                <h2>⚙️️ Control de Asistencia y Disponibilidad</h2>
                 <p style="margin-bottom: 20px;">
                     Supervisión del núcleo principal de asalto de cara a mantener la optimización de grupos organizados:
                 </p>
@@ -1396,18 +1426,11 @@
                                 <th>Estado de Guardia</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody id="tabla-control-body">
                             <tr>
-                                <td><strong>Miembro Núcleo 1 (DPS)</strong></td>
-                                <td style="color: #4ade80; font-weight: 700;">100%</td>
-                                <td>Excelente</td>
-                                <td><span class="badge" style="background: rgba(37, 99, 235, 0.2); color: #93c5fd; border: 1px solid rgba(37, 99, 235, 0.4);">Listo para Raid</span></td>
-                            </tr>
-                            <tr>
-                                <td><strong>Miembro Núcleo 2 (Tanque)</strong></td>
-                                <td style="color: #facc15; font-weight: 700;">95%</td>
-                                <td>Aceptable</td>
-                                <td><span class="badge" style="background: rgba(37, 99, 235, 0.2); color: #93c5fd; border: 1px solid rgba(37, 99, 235, 0.4);">Listo para Raid</span></td>
+                                <td colspan="4" style="text-align:center; color:#94a3b8; padding:25px; font-style:italic;">
+                                    No hay datos de asistencia cargados actualmente.
+                                </td>
                             </tr>
                         </tbody>
                     </table>
@@ -1428,7 +1451,7 @@
                 <div class="tabla-contenedor">
                     <table>
                         <thead>
-                            <tr>
+                            <tr id="tabla-historial-head-row">
                                 <th>Fecha</th>
                                 <th>Encuentro</th>
                                 <th>Resultado</th>
@@ -1451,7 +1474,7 @@
             <div class="tarjeta" style="grid-column: 1 / -1;">
                 <h2>💎 Distribución de Botín</h2>
                 <p style="font-size: 1.05rem; line-height: 1.8;">
-                    Módulo destinado al control de reparto de piezas de equipo épicas, recompensas legendarias y prioridades de banco asignadas.
+                    Módulo destinado al control de reparto de piezas de equipo épicas y prioridades de banco asignadas.
                 </p>
             </div>
         </div>
@@ -1466,7 +1489,7 @@
     <div id="modalLoginOficial" class="modal-overlay">
         <div class="modal-caja" style="max-width: 420px;">
             <h3>🔑 Acceso para Oficiales</h3>
-            <p>Introduce el código de acceso del Alto Consejo para desbloquear el permiso de subida y edición de logs.</p>
+            <p>Introduce el código de acceso del Alto Consejo para desbloquear el permiso de subida y gestión de logs.</p>
             
             <form onsubmit="verificarClaveOficial(event)">
                 <div class="form-grupo">
@@ -1490,7 +1513,7 @@
     <div id="modalSubirLog" class="modal-overlay">
         <div class="modal-caja">
             <h3>📊 Registrador de Warcraft Logs</h3>
-            <p>Pega el enlace de tu reporte de Warcraft Logs para autocompletar e vincular el combate directamente.</p>
+            <p>Pega el enlace de tu reporte de Warcraft Logs para importar e vincular el combate directamente.</p>
 
             <form onsubmit="guardarLogFormulario(event)">
                 <div class="form-grupo" style="background: rgba(193, 158, 69, 0.08); padding: 12px; border-radius: 8px; border: 1px solid var(--borde-dorado);">
@@ -1508,17 +1531,13 @@
 
                 <div class="form-grupo" style="margin-top:15px;">
                     <label>Jefe / Encuentro</label>
-                    <input type="text" id="logJefe" placeholder="Ej. Reina Ansurek" required>
+                    <input type="text" id="logJefe" placeholder="Ej. Primer Jefe de Raid" required>
                 </div>
 
                 <div style="display:flex; gap:10px;">
                     <div class="form-grupo" style="flex:1;">
                         <label>Dificultad</label>
-                        <select id="logDificultad">
-                            <option value="Heroica">Heroica</option>
-                            <option value="Mítica">Mítica</option>
-                            <option value="Normal">Normal</option>
-                        </select>
+                        <input type="text" id="logDificultad" value="Única" readonly style="opacity:0.8; cursor:not-allowed;">
                     </div>
 
                     <div class="form-grupo" style="flex:1;">
@@ -1538,14 +1557,14 @@
                 <div style="display:flex; gap:10px;">
                     <div class="form-grupo" style="flex:1;">
                         <label>Top DPS (Nombre y Daño)</label>
-                        <input type="text" id="logDpsNombre" placeholder="Ej. Viktor">
+                        <input type="text" id="logDpsNombre" placeholder="Ej. TuNombre">
                         <input type="text" id="logDpsM" placeholder="Ej. 1.45M" style="margin-top:5px;">
                         <input type="number" id="logDpsParse" placeholder="Parse % (Ej. 95)" style="margin-top:5px;">
                     </div>
 
                     <div class="form-grupo" style="flex:1;">
                         <label>Top HPS (Nombre y Sanación)</label>
-                        <input type="text" id="logHpsNombre" placeholder="Ej. Pescadito">
+                        <input type="text" id="logHpsNombre" placeholder="Ej. TuSanador">
                         <input type="text" id="logHpsM" placeholder="Ej. 980K" style="margin-top:5px;">
                         <input type="number" id="logHpsParse" placeholder="Parse % (Ej. 92)" style="margin-top:5px;">
                     </div>
@@ -1553,7 +1572,6 @@
 
                 <div style="margin-top: 15px;">
                     <button type="submit" class="btn-cerrar-modal">Guardar Log</button>
-                    <button type="button" class="btn-secundario-modal" onclick="simularLogAleatorio()">🎲 Generar Log de Prueba</button>
                     <button type="button" class="btn-secundario-modal" onclick="cerrarModalSubirLog()">Cancelar</button>
                 </div>
             </form>
